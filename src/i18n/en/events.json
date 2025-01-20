@@ -1,0 +1,133 @@
+{
+  "user_not_found": "User with this email does not exist.",
+  "password_reset_link_sent": "Password reset link has been sent to your email.",
+  "password_mismatch": "New password and confirm password do not match.",
+  "password_reset_success": "Password has been reset successfully.",
+  "email_already_exists": "Email already exists.",
+  "invalid_credentials": "Invalid credentials.",
+  "account_inactive": "Your account is inactive. Please contact support.",
+  "invalid_email_or_password": "Invalid email or password.",
+  "invalid_object_id": "This is not a valid MongoDB ObjectId.",
+  "not_found_in_database": "This record does not exist in the database.",
+  "invalid_role": "Invalid role. Role must be either 'admin' or 'user'.",
+  "invalid_status": "Invalid status. Status must be either 'active' or 'inactive'.",
+  "invalid_refresh_token": "Invalid refresh token.",
+  "user_not_found_generic": "User not found.",
+  "invalid_or_missing_token": "Invalid or missing token.",
+  "invalid_token": "Invalid token.",
+  "sign_in_required": "You need to sign in to access this route.",
+  "permission_denied": "You do not have permission to access this resource.",
+  "invalid_or_expired_token": "Invalid or expired token.",
+  "vendor_no_found" : "Vendor with ID {id} not found.",
+  "vendor_deleted" : "Vendor with ID {id} has been successfully deleted.",
+
+  "validation": {
+    "name": {
+      "minLength": "Name must be at least 3 characters long."
+    },
+    "email": {
+      "required": "Email is required."
+    },
+    "password": {
+      "minLength": "Password must be at least 3 characters long."
+    },
+    "role": {
+      "invalid": "Role must be either 'admin' or 'user'."
+    },
+    "status": {
+      "invalid": "Status must be either 'active' or 'inactive'."
+    },
+    "vendor": {
+      "multilingual": {
+        "en": "English field must be a string.",
+        "ar": "Arabic field must be a string."
+      },
+      "property_name": {
+        "object": "Property name must be an object."
+      },
+      "occasion_type": {
+        "object": "Occasion type must be an object."
+      },
+      "operating_system": {
+        "string": "Operating system must be a string."
+      },
+      "joined_date": {
+        "date": "Joined date must be a valid date string."
+      },
+      "overall_revenue": {
+        "number": "Overall revenue must be a number."
+      },
+      "location": {
+        "object": "Location must be an object.",
+        "string": "Location must be a string."
+      },
+      "address": {
+        "object": "Address must be an object."
+      },
+      "mobile": {
+        "string": "Mobile number must be a string."
+      },
+      "email": {
+        "string": "Email must be a string."
+      },
+      "contact_person": {
+        "object": "Contact person must be an object."
+      }
+    },
+    "user": {
+      "name": {
+        "string": "Name must be a string.",
+        "minLength": "Name must be at least 3 characters long."
+      },
+      "email": {
+        "email": "Invalid email format."
+      },
+      "password": {
+        "string": "Password must be a string.",
+        "minLength": "Password must be at least 3 characters long."
+      },
+      "role": {
+        "enum": "Role must be either 'admin' or 'user'."
+      },
+      "avatar": {
+        "string": "Avatar must be a string."
+      },
+      "status": {
+        "enum": "Status must be either 'active' or 'inactive'."
+      },
+      "phone": {
+        "string": "Phone must be a string."
+      },
+      "gender": {
+        "enum": "Gender must be either 'male', 'female', or 'none'."
+      }
+    },
+    "finance" : {
+      "vendorName.object": "vendorName must be an object with 'en' and 'ar' properties",
+      "vendorName.required": "vendorName is required",
+      "balance.number": "balance must be a number",
+      "balance.required": "balance is required",
+      "balanceWithdrawn.number": "balanceWithdrawn must be a number",
+      "balanceWithdrawn.required": "balanceWithdrawn is required",
+      "remainingBalance.number": "remainingBalance must be a number",
+      "remainingBalance.required": "remainingBalance is required",
+      "bankName.string": "bankName must be a string",
+      "bankName.required": "bankName is required",
+      "accountNumber.string": "accountNumber must be a string",
+      "accountNumber.required": "accountNumber is required",
+      "iban.string": "iban must be a string",
+      "iban.required": "iban is required",
+      "balanceAfterTransaction.number": "balanceAfterTransaction must be a number",
+      "balanceAfterTransaction.required": "balanceAfterTransaction is required",
+      "balanceBeforeTransaction.number": "balanceBeforeTransaction must be a number",
+      "balanceBeforeTransaction.required": "balanceBeforeTransaction is required",
+      "to.string": "to must be a string",
+      "to.required": "to is required",
+      "invalid": "Invalid pagination parameters. \"page\" and \"limit\" must be positive numbers.",
+      "deleted": "Finance record with ID {id} has been successfully deleted."
+    }
+    
+    
+  },
+  "notFound": "This recored with ID not found."
+}

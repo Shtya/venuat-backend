@@ -1,0 +1,128 @@
+{
+  "user_not_found": "لا يوجد مستخدم بهذا البريد الإلكتروني.",
+  "password_reset_link_sent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
+  "password_mismatch": "كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقين.",
+  "password_reset_success": "تم إعادة تعيين كلمة المرور بنجاح.",
+  "email_already_exists": "البريد الإلكتروني موجود بالفعل.",
+  "invalid_credentials": "بيانات الاعتماد غير صالحة.",
+  "account_inactive": "حسابك غير نشط. يرجى الاتصال بالدعم.",
+  "invalid_email_or_password": "بريد إلكتروني أو كلمة مرور غير صالحة.",
+  "invalid_object_id": "هذا ليس معرف MongoDB صالحًا.",
+  "not_found_in_database": "هذا السجل غير موجود في قاعدة البيانات.",
+  "invalid_role": "دور غير صالح. يجب أن يكون الدور إما 'admin' أو 'user'.",
+  "invalid_status": "حالة غير صالحة. يجب أن تكون الحالة إما 'active' أو 'inActive'.",
+  "invalid_refresh_token": "رمز التحديث غير صالح.",
+  "user_not_found_generic": "المستخدم غير موجود.",
+  "invalid_or_missing_token": "الرمز غير صالح أو مفقود.",
+  "invalid_token": "الرمز غير صالح.",
+  "sign_in_required": "يجب عليك تسجيل الدخول للوصول إلى هذا المسار.",
+  "permission_denied": "ليس لديك الصلاحية للوصول إلى هذا المورد.",
+  "invalid_or_expired_token": "الرمز غير صالح أو منتهي الصلاحية.",
+  "vendor_no_found": "البائع ذو المعرف {id} غير موجود.",
+    "vendor_deleted": "تم حذف البائع ذو المعرف {id} بنجاح.",
+
+
+
+  "validation": {
+    "name": { "minLength": "يجب أن يكون الاسم على الأقل 3 أحرف." },
+    "email": { "required": "البريد الإلكتروني مطلوب." },
+    "password": { "minLength": "يجب أن تكون كلمة المرور على الأقل 3 أحرف." },
+    "role": {
+      "invalid": "يجب أن تكون الصلاحية إما 'مدير' أو 'مستخدم'."
+    },
+    "status": {
+      "invalid": "يجب أن تكون الحالة إما 'مفعل' أو 'غير مفعل'."
+    },
+    "vendor": {
+      "multilingual": {
+        "en": "الحقل الإنجليزي يجب أن يكون نصًا.",
+        "ar": "الحقل العربي يجب أن يكون نصًا."
+      },
+      "property_name": {
+        "object": "اسم العقار يجب أن يكون كائنًا."
+      },
+      "occasion_type": {
+        "object": "نوع المناسبة يجب أن يكون كائنًا."
+      },
+      "operating_system": {
+        "string": "نظام التشغيل يجب أن يكون نصًا."
+      },
+      "joined_date": {
+        "date": "تاريخ الانضمام يجب أن يكون تاريخًا صالحًا."
+      },
+      "overall_revenue": {
+        "number": "إجمالي الإيرادات يجب أن يكون رقمًا."
+      },
+      "location": {
+        "object": "الموقع يجب أن يكون كائنًا.",
+        "string": "الموقع يجب أن يكون نصًا."
+      },
+      "address": {
+        "object": "العنوان يجب أن يكون كائنًا."
+      },
+      "mobile": {
+        "string": "رقم الجوال يجب أن يكون نصًا."
+      },
+      "email": {
+        "string": "البريد الإلكتروني يجب أن يكون نصًا."
+      },
+      "contact_person": {
+        "object": "الشخص المسؤول يجب أن يكون كائنًا."
+      }
+    },
+    "user": {
+      "name": {
+        "string": "يجب أن يكون الاسم نصًا.",
+        "minLength": "يجب أن يكون الاسم على الأقل 3 أحرف."
+      },
+      "email": {
+        "email": "صيغة البريد الإلكتروني غير صالحة."
+      },
+      "password": {
+        "string": "يجب أن تكون كلمة المرور نصًا.",
+        "minLength": "يجب أن تكون كلمة المرور على الأقل 3 أحرف."
+      },
+      "role": {
+        "enum": "يجب أن تكون الصلاحية إما 'admin' أو 'user'."
+      },
+      "avatar": {
+        "string": "يجب أن يكون الصورة الرمزية نصًا."
+      },
+      "status": {
+        "enum": "يجب أن تكون الحالة إما 'active' أو 'inactive'."
+      },
+      "phone": {
+        "string": "يجب أن يكون الهاتف نصًا."
+      },
+      "gender": {
+        "enum": "يجب أن يكون الجنس إما 'male' أو 'female' أو 'none'."
+      }
+    },
+    "finance" : {
+      "vendorName.object": "يجب أن يكون vendorName كائنًا يحتوي على خصائص 'en' و 'ar'",
+      "vendorName.required": "vendorName مطلوب",
+      "balance.number": "يجب أن يكون balance رقمًا",
+      "balance.required": "balance مطلوب",
+      "balanceWithdrawn.number": "يجب أن يكون balanceWithdrawn رقمًا",
+      "balanceWithdrawn.required": "balanceWithdrawn مطلوب",
+      "remainingBalance.number": "يجب أن يكون remainingBalance رقمًا",
+      "remainingBalance.required": "remainingBalance مطلوب",
+      "bankName.string": "يجب أن يكون bankName نصًا",
+      "bankName.required": "bankName مطلوب",
+      "accountNumber.string": "يجب أن يكون accountNumber نصًا",
+      "accountNumber.required": "accountNumber مطلوب",
+      "iban.string": "يجب أن يكون iban نصًا",
+      "iban.required": "iban مطلوب",
+      "balanceAfterTransaction.number": "يجب أن يكون balanceAfterTransaction رقمًا",
+      "balanceAfterTransaction.required": "balanceAfterTransaction مطلوب",
+      "balanceBeforeTransaction.number": "يجب أن يكون balanceBeforeTransaction رقمًا",
+      "balanceBeforeTransaction.required": "balanceBeforeTransaction مطلوب",
+      "to.string": "يجب أن يكون to نصًا",
+      "to.required": "to مطلوب",
+      "invalid": "معلمات التقسيم غير صالحة. يجب أن تكون \"page\" و \"limit\" أرقامًا موجبة.",
+      "deleted": "تم حذف سجل التمويل بالمعرف {id} بنجاح."
+    }
+    
+  },
+  "notFound": "هذا السجل بالمعرف  غير موجود."
+}
