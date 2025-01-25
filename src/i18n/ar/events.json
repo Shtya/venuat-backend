@@ -19,9 +19,7 @@
   "permission_denied": "ليس لديك الصلاحية للوصول إلى هذا المورد.",
   "invalid_or_expired_token": "الرمز غير صالح أو منتهي الصلاحية.",
   "vendor_no_found": "البائع ذو المعرف {id} غير موجود.",
-    "vendor_deleted": "تم حذف البائع ذو المعرف {id} بنجاح.",
-
-
+  "vendor_deleted": "تم حذف البائع ذو المعرف {id} بنجاح.",
 
   "validation": {
     "name": { "minLength": "يجب أن يكون الاسم على الأقل 3 أحرف." },
@@ -98,7 +96,7 @@
         "enum": "يجب أن يكون الجنس إما 'male' أو 'female' أو 'none'."
       }
     },
-    "finance" : {
+    "finance": {
       "vendorName.object": "يجب أن يكون vendorName كائنًا يحتوي على خصائص 'en' و 'ar'",
       "vendorName.required": "vendorName مطلوب",
       "balance.number": "يجب أن يكون balance رقمًا",
@@ -121,8 +119,14 @@
       "to.required": "to مطلوب",
       "invalid": "معلمات التقسيم غير صالحة. يجب أن تكون \"page\" و \"limit\" أرقامًا موجبة.",
       "deleted": "تم حذف سجل التمويل بالمعرف {id} بنجاح."
-    }
-    
+    },
+    "date_required": "التاريخ مطلوب.",
+    "venue_name_required": "اسم المكان مطلوب.",
+    "event_type_required": "نوع الحدث مطلوب.",
+    "booking_price_required": "سعر الحجز مطلوب.",
+    "venue_name_error": "يجب أن يكون اسم المكان نصًا وأقل من 100 حرف.",
+    "event_type_error": "يجب أن يكون نوع الحدث نصًا وأقل من 50 حرفًا.",
+    "booking_price_error": "يجب أن يكون سعر الحجز رقمًا موجبًا."
   },
   "notFound": "هذا السجل بالمعرف  غير موجود."
 }

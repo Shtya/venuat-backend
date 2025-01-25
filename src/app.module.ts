@@ -1,16 +1,25 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config'; // Import ConfigModule and ConfigService
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config'; // Import ConfigModule and ConfigService
 import { UserModule } from './user/user.module';
 import { JwtModule } from "@nestjs/jwt";
 import { HeaderResolver, I18nModule , QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { LoggingValidationPipe } from 'common/translationPipe';
-import { VendorModule } from './vendors/vendors.module';
-import { FinanceModule } from './finance/finance.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Finance } from 'entities/finance.entity';
-import { ReservationModule } from './reservation/reservation.module';
+import { AuthModule } from './auth/auth.module';
+import { PropertyModule } from './property/property.module';
+import { CityModule } from './city/city.module';
+import { VenueModule } from './venue/venue.module';
+import { SharedModule } from './shared.module';
+import { CountryModule } from './country/country.module';
+import { MediaModule } from './media/media.module';
+import { WebsiteSettingModule } from './website-setting/website-setting.module';
+import { OccasionTypeModule } from './occasion_type/occasion_type.module';
+import { FeatureModule } from './feature/feature.module';
+import { ServiceModule } from './service/service.module';
+import { VenueServiceModule } from './venue-service/venue-service.module';
+import { EquipmentModule } from './equipment/equipment.module';
+import { VenueEquipmentModule } from './venue-equipment/venue-equipment.module';
 
 @Module({
   imports: [
@@ -18,24 +27,16 @@ import { ReservationModule } from './reservation/reservation.module';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'admin',
-      database: 'venuat',
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT, 10),
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
       entities: [__dirname + '/../**/*.entity{.ts,.js}'], // Adjusted path
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Finance]),
+    SharedModule,
 
-
-
-
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async () => ({ uri: process.env.MONGODB_URI }),
-    }),
 
     JwtModule.register({
       global : true ,
@@ -57,11 +58,21 @@ import { ReservationModule } from './reservation/reservation.module';
     }),
 
     UserModule,
-    VendorModule,
-    FinanceModule,
-    ReservationModule,
+    AuthModule,
+    PropertyModule,
+    CityModule,
+    VenueModule,
+    CountryModule,
+    MediaModule,
+    WebsiteSettingModule,
+    OccasionTypeModule,
+    FeatureModule,
+    ServiceModule,
+    VenueServiceModule,
+    EquipmentModule,
+    VenueEquipmentModule
   ],
-  providers: [LoggingValidationPipe],
+  providers: [LoggingValidationPipe ],
   exports: [LoggingValidationPipe],
 })
 export class AppModule { }

@@ -1,12 +1,11 @@
 {
   "user_not_found": "User with this email does not exist.",
   "password_reset_link_sent": "Password reset link has been sent to your email.",
-  "password_mismatch": "New password and confirm password do not match.",
   "password_reset_success": "Password has been reset successfully.",
   "email_already_exists": "Email already exists.",
   "invalid_credentials": "Invalid credentials.",
   "account_inactive": "Your account is inactive. Please contact support.",
-  "invalid_email_or_password": "Invalid email or password.",
+  "invalid_email_or_password": "Invalid input. Please check your email and password.",
   "invalid_object_id": "This is not a valid MongoDB ObjectId.",
   "not_found_in_database": "This record does not exist in the database.",
   "invalid_role": "Invalid role. Role must be either 'admin' or 'user'.",
@@ -18,8 +17,8 @@
   "sign_in_required": "You need to sign in to access this route.",
   "permission_denied": "You do not have permission to access this resource.",
   "invalid_or_expired_token": "Invalid or expired token.",
-  "vendor_no_found" : "Vendor with ID {id} not found.",
-  "vendor_deleted" : "Vendor with ID {id} has been successfully deleted.",
+  "vendor_no_found": "Vendor with ID {id} not found.",
+  "vendor_deleted": "Vendor with ID {id} has been successfully deleted.",
 
   "validation": {
     "name": {
@@ -102,7 +101,7 @@
         "enum": "Gender must be either 'male', 'female', or 'none'."
       }
     },
-    "finance" : {
+    "finance": {
       "vendorName.object": "vendorName must be an object with 'en' and 'ar' properties",
       "vendorName.required": "vendorName is required",
       "balance.number": "balance must be a number",
@@ -125,9 +124,21 @@
       "to.required": "to is required",
       "invalid": "Invalid pagination parameters. \"page\" and \"limit\" must be positive numbers.",
       "deleted": "Finance record with ID {id} has been successfully deleted."
-    }
-    
+    },
+    "date_required": "Date is required.",
+    "venue_name_required": "Venue name is required.",
+    "event_type_required": "Event type is required.",
+    "booking_price_required": "Booking price is required.",
+    "venue_name_error": "Venue name must be a string and less than 100 characters.",
+    "event_type_error": "Event type must be a string and less than 50 characters.",
+    "booking_price_error": "Booking price must be a positive number."
     
   },
-  "notFound": "This recored with ID not found."
+  "notFound": "This recored with ID not found.",
+  "try_after_5min": "Please wait for {remainingTime} seconds before requesting another OTP.",
+  "otp_sent": "An OTP has been sent to your email. Please check your inbox.",
+  "password_mismatch": "New password and confirm password do not match.",
+  "invalid_or_expired_otp": "Invalid or expired OTP.",
+  "current_password_required": "Current password is required.",
+  "current_password_incorrect": "Current password is incorrect."
 }

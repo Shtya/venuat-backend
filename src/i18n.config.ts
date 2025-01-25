@@ -3,7 +3,8 @@ import {
   AcceptLanguageResolver,
   QueryResolver,
   I18nOptions,
-  HeaderResolver
+  HeaderResolver,
+  I18nJsonLoader
 } from 'nestjs-i18n';
 
 export const i18nConfig: I18nOptions = {
@@ -17,4 +18,5 @@ export const i18nConfig: I18nOptions = {
       AcceptLanguageResolver
     ],
   },
+  loader : I18nJsonLoader
 };
