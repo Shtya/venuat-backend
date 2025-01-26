@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const port = process.env.PORT || 3000
+  const port = process.env.PORT || 3030
   // Get the ConfigService instance
   const configService = app.get(ConfigService);
 
