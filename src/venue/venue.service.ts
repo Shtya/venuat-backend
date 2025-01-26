@@ -11,6 +11,7 @@ import { AddFeatureToVenueDto } from 'dto/venue/feature.dto';
 import { Service } from 'entity/venue/service.entity';
 import { VenueService as VenueServiceEntity } from 'entity/venue/venue_service.entity';
 import { AddServiceToVenueDto } from 'dto/venue/service.dto';
+import { Property } from 'entity/property/property.entity';
 
 @Injectable()
 export class VenueService {
@@ -23,6 +24,8 @@ export class VenueService {
     private featureRepository: Repository<Feature>,
     @InjectRepository(VenueFeature)
     private venueFeatureRepository: Repository<VenueFeature>,
+    @InjectRepository(Property)
+    private propertyRepository: Repository<Property>,
     
   ) {}
   
@@ -30,12 +33,18 @@ export class VenueService {
     'occasion_type', 
     'venueFeatures', 'venueFeatures.feature', 'venueFeatures.feature.iconMedia',
     "venueServices" , "venueServices.service",
-    'venueEquipments'
+    'venueEquipments',
+    "venuePolicies" , "venuePolicies.policy",
+    'venueFAQs',
+    'venueCalendars',
+    "property"
   ];
 
   async create(dto: CreateVenueDto): Promise<Venue> {
     dto.occasion_type_id &&  await checkFieldExists(this.occasionTypeRepository, { id: dto.occasion_type_id }, 'Occasion type does not exist', true);
+    dto.property_id &&  await checkFieldExists(this.propertyRepository, { id: dto.property_id }, 'Property does not exist', true);
 
+    
     const venue = this.venueRepository.create({
       ...dto,
       occasion_type: { id: dto.occasion_type_id }, // Set the relation

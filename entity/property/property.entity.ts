@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 import { City } from '../property/city.entity';
 import { Venue } from '../venue/venue.entity';
@@ -18,13 +18,16 @@ export class Property {
   file: string;
   
   @ManyToOne(() => User, user => user.properties)
+  @JoinColumn({ name: 'vendor_id' })
   vendor: User;
   
   @ManyToOne(() => City, city => city.properties)
+  @JoinColumn({ name: 'city_id' })
   city: City;
   
-  // @OneToMany(() => Venue, venue => venue.property)
-  // venue: Venue[];
+  @OneToMany(() => Venue, venue => venue.property)
+  // @JoinColumn({ name: 'venue_id' })
+  venue: Venue[];
   
   @CreateDateColumn()
   created_at: Date;

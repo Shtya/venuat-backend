@@ -20,6 +20,10 @@ import { ServiceModule } from './service/service.module';
 import { VenueServiceModule } from './venue-service/venue-service.module';
 import { EquipmentModule } from './equipment/equipment.module';
 import { VenueEquipmentModule } from './venue-equipment/venue-equipment.module';
+import { VenuePolicyModule } from './venue-policy/venue-policy.module';
+import { PolicyModule } from './policy/policy.module';
+import { FaqsModule } from './faqs/faqs.module';
+import { VenueCalendarModule } from './venue-calendar/venue-calendar.module';
 
 @Module({
   imports: [
@@ -70,7 +74,11 @@ import { VenueEquipmentModule } from './venue-equipment/venue-equipment.module';
     ServiceModule,
     VenueServiceModule,
     EquipmentModule,
-    VenueEquipmentModule
+    VenueEquipmentModule,
+    VenuePolicyModule,
+    PolicyModule,
+    FaqsModule,
+    VenueCalendarModule
   ],
   providers: [LoggingValidationPipe ],
   exports: [LoggingValidationPipe],

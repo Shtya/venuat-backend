@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { OccasionType } from './occasion_type.entity';
 import { VenueFeature } from './venue_feature.entity';
 import { VenueService } from './venue_service.entity';
@@ -9,6 +9,7 @@ import { VenuePackage } from './venue_package.entity';
 import { VenueGallery } from './venue_gallery.entity';
 import { VenueFAQ } from './venue_faq.entity';
 import { Reservation } from '../reservation/reservation.entity';
+import { VenueCalendar } from './venue_calendar.entity';
 
 @Entity()
 export class Venue {
@@ -94,15 +95,18 @@ export class Venue {
   @OneToMany(() => VenueEquipment, venueEquipment => venueEquipment.venue)
   venueEquipments: VenueEquipment[];
 
+  @OneToMany(() => VenuePolicy, venuePolicy => venuePolicy.venue)
+  venuePolicies: VenuePolicy[];
+  
+  @OneToMany(() => VenueFAQ, venueFAQ => venueFAQ.venue)
+  venueFAQs: VenueFAQ[];
 
-  // @OneToMany(() => VenuePolicy, venuePolicy => venuePolicy.venue)
-  // venuePolicies: VenuePolicy[];
+  @OneToMany(() => VenueCalendar, venueCalendar => venueCalendar.venue)
+  venueCalendars: VenueCalendar[];
 
-  // @OneToMany(() => VenueCalendar, venueCalendar => venueCalendar.venue)
-  // venueCalendars: VenueCalendar[];
-
-  // @ManyToOne(() => Property, property => property.venue)
-  // property: Property;
+  @ManyToOne(() => Property, property => property.venue)
+  @JoinColumn({ name: 'property_id' })
+  property: Property;
 
 
   // @OneToMany(() => VenuePackage, venuePackage => venuePackage.venue)
@@ -111,8 +115,6 @@ export class Venue {
   // @OneToMany(() => VenueGallery, venueGallery => venueGallery.venue)
   // venueGalleries: VenueGallery[];
 
-  // @OneToMany(() => VenueFAQ, venueFAQ => venueFAQ.venue)
-  // venueFAQs: VenueFAQ[];
 
   // @OneToMany(() => Reservation, reservation => reservation.venue)
   // reservations: Reservation[];

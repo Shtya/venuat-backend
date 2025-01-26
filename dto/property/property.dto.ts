@@ -18,6 +18,8 @@ export class CreatePropertyDto {
   // @IsNotEmpty({ message: 'File is required.' })
   file: string;
 
+  @IsNumber({}, { message: 'Vendor ID must be a number.' })
+  @IsNotEmpty({ message: 'Vendor ID is required.' })
   vendor_id: any;
 
   @IsNumber({}, { message: 'City ID must be a number.' })
@@ -25,6 +27,9 @@ export class CreatePropertyDto {
   city_id: any;
 
 
+  // @IsNumber({}, { message: 'Venue ID must be a number.' })
+  // @IsNotEmpty({ message: 'Venue ID is required.' })
+  // venue_id : any;
 }
 
 

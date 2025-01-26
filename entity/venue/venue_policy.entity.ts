@@ -7,8 +7,8 @@ export class VenuePolicy {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @ManyToOne(() => Venue, venue => venue.venuePolicies)
-  // venue: Venue;
+  @ManyToOne(() => Venue, venue => venue.venuePolicies)
+  venue: Venue;
 
   @ManyToOne(() => Policy, policy => policy.venuePolicies)
   policy: Policy;

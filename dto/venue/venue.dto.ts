@@ -92,6 +92,10 @@ export class CreateVenueDto {
   @IsOptional()
   @IsNumber({}, { message: 'Occasion type ID should be a number' })
   occasion_type_id: number;
+
+  @IsOptional()
+  @IsNumber({}, { message: 'Property ID should be a number' })
+  property_id: number;
 }
 
 export class UpdateVenueDto extends PartialType(CreateVenueDto) {}

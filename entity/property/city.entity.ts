@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Country } from './country.entity';
 import { Property } from './property.entity';
 
@@ -11,6 +11,7 @@ export class City {
   name: string;
 
   @ManyToOne(() => Country, country => country.cities)
+  @JoinColumn({ name: 'country_id' })
   country: Country;
 
   @OneToMany(() => Property, property => property.city)

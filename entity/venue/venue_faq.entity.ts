@@ -6,8 +6,8 @@ export class VenueFAQ {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @ManyToOne(() => Venue, venue => venue.venueFAQs)
-  // venue: Venue;
+  @ManyToOne(() => Venue, venue => venue.venueFAQs)
+  venue: Venue;
 
   @Column('jsonb')
   question: any;
