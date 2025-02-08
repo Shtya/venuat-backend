@@ -1,48 +1,47 @@
 import { IsNotEmpty, IsNumber, IsObject, IsOptional } from 'class-validator';
 
 export class CreatePolicyDto {
-  @IsObject({ message: 'Name must be a JSON object.' })
-  @IsNotEmpty({ message: 'Name is required.' })
+  @IsObject({ message: "events.policyNameMustBeObject" }) // يجب أن يكون الاسم كائن JSON
+  @IsNotEmpty({ message: "events.policyNameRequired" }) // الاسم مطلوب
   name: Record<string, any>;
 
-  @IsObject({ message: 'Description must be a JSON object.' })
-  @IsNotEmpty({ message: 'Description is required.' })
+  @IsObject({ message: "events.policyDescriptionMustBeObject" }) // يجب أن يكون الوصف كائن JSON
+  @IsNotEmpty({ message: "events.policyDescriptionRequired" }) // الوصف مطلوب
   description: Record<string, any>;
 }
 
 export class UpdatePolicyDto {
-  @IsObject({ message: 'Name must be a JSON object.' })
+  @IsObject({ message: "events.policyNameMustBeObject" }) // يجب أن يكون الاسم كائن JSON
   @IsOptional()
   name?: Record<string, any>;
 
-  @IsObject({ message: 'Description must be a JSON object.' })
+  @IsObject({ message: "events.policyDescriptionMustBeObject" }) // يجب أن يكون الوصف كائن JSON
   @IsOptional()
   description?: Record<string, any>;
 }
 
 export class AddPolicyToVenueDto {
-  @IsNumber({}, { message: 'Policy ID must be a number.' })
-  @IsNotEmpty({ message: 'Policy ID is required.' })
+  @IsNumber({}, { message: "events.policyIdMustBeNumber" }) // يجب أن يكون معرف السياسة رقمًا
+  @IsNotEmpty({ message: "events.policyIdRequired" }) // معرف السياسة مطلوب
   policy_id: number;
 }
 
-
 export class CreateVenuePolicyDto {
-  @IsNumber({}, { message: 'Venue ID must be a number.' })
-  @IsNotEmpty({ message: 'Venue ID is required.' })
+  @IsNumber({}, { message: "events.venueIdMustBeNumber" }) // يجب أن يكون معرف القاعة رقمًا
+  @IsNotEmpty({ message: "events.venueIdRequired" }) // معرف القاعة مطلوب
   venue_id: number;
 
-  @IsNumber({}, { message: 'Policy ID must be a number.' })
-  @IsNotEmpty({ message: 'Policy ID is required.' })
+  @IsNumber({}, { message: "events.policyIdMustBeNumber" }) // يجب أن يكون معرف السياسة رقمًا
+  @IsNotEmpty({ message: "events.policyIdRequired" }) // معرف السياسة مطلوب
   policy_id: number;
 }
 
 export class UpdateVenuePolicyDto {
-  @IsNumber({}, { message: 'Venue ID must be a number.' })
+  @IsNumber({}, { message: "events.venueIdMustBeNumber" }) // يجب أن يكون معرف القاعة رقمًا
   @IsOptional()
   venue_id?: number;
 
-  @IsNumber({}, { message: 'Policy ID must be a number.' })
+  @IsNumber({}, { message: "events.policyIdMustBeNumber" }) // يجب أن يكون معرف السياسة رقمًا
   @IsOptional()
   policy_id?: number;
 }

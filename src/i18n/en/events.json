@@ -2,8 +2,37 @@
   "price_must_be_Number": "",
   "refresh_token_required": "",
 
-  "service_not_exist": "Service doesn't exist.",
+  "date_range_overlap": "The date range overlaps with an existing entry for this venue.",
+  "dateFromMustBeValid": "Date from must be a valid date",
+  "dateFromRequired": "Date from is required",
+  "dateToMustBeValid": "Date to must be a valid date",
+  "dateToRequired": "Date to is required",
+  "questionMustBeObject": "Question must be a JSON object",
+  "questionRequired": "Question is required",
+  "answerMustBeObject": "Answer must be a JSON object",
+  "answerRequired": "Answer is required",
 
+  "media_not_found": "Media with ID {icon_media_id} does not exist.",
+
+  "events.feature_name_required": "Feature name is required.",
+  "events.feature_name_invalid": "Feature name must be a JSON object.",
+  "events.icon_media_id_invalid": "Icon media ID must be a valid number.",
+  "events.feature_id_required": "Feature ID is required.",
+  "events.feature_id_invalid": "Feature ID must be a valid number.",
+
+  "policyNameMustBeObject": "Policy name must be a JSON object",
+  "policyNameRequired": "Policy name is required",
+  "policyDescriptionMustBeObject": "Policy description must be a JSON object",
+  "policyDescriptionRequired": "Policy description is required",
+  "policyIdMustBeNumber": "Policy ID must be a number",
+  "policyIdRequired": "Policy ID is required",
+
+  "policy_not_found": "Policy with ID {policy_id} not found.",
+  "policy_not_found_for_venue": "Policy with ID {policyId} not found for Venue with ID {venueId}.",
+  "policy_removed_from_venue": "Policy with ID {policyId} has been removed from Venue with ID {venueId}.",
+
+  "service_not_exist": "Service doesn't exist.",
+  "venue_not_found2": "Venue with ID {venue_id} not found.",
   "user_not_exist": "The specified user does not exist.",
   "venue_not_exist": "The requested venue could not be found.",
   "package_not_exist": "The selected package does not exist.",

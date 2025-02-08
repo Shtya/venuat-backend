@@ -36,9 +36,11 @@ export class VenueCalendarService extends BaseService<VenueCalendar> {
       .getOne();
 
     if (overlappingEntry) {
-      throw new ConflictException('The date range overlaps with an existing entry for this venue.');
+      throw new ConflictException(this.i18n.t("events.date_range_overlap")); //!
     }
   }
+
+
 
   // Create a new calendar entry
   async createCustom(dto: CreateVenueCalendarDto): Promise<VenueCalendar> {
@@ -47,7 +49,7 @@ export class VenueCalendarService extends BaseService<VenueCalendar> {
     });
 
     if (!venue) {
-      throw new NotFoundException(`Venue with ID ${dto.venue_id} not found`);
+      throw new NotFoundException(this.i18n.t("events.venue_not_found", { args: { venue_id: dto.venue_id } })); //!
     }
 
     // Check for overlapping dates

@@ -78,5 +78,31 @@ INSERT INTO service (name, icon_media_id, is_predefined) VALUES
 
 
 
+! FAQs
+
+INSERT INTO venue_faq (venue_id, question, answer, created_at, updated_at)
+	VALUES 
+	(1, '{"en": "What are the operating hours?", "ar": "ما هي ساعات العمل؟"}', '{"en": "We are open from 9 AM to 10 PM.", "ar": "نحن نعمل من الساعة 9 صباحًا حتى 10 مساءً."}', NOW(), NOW()),
+	(1, '{"en": "Is parking available?", "ar": "هل تتوفر مواقف سيارات؟"}', '{"en": "Yes, free parking is available for all guests.", "ar": "نعم، المواقف مجانية لجميع الزوار."}', NOW(), NOW()),
+	(2, '{"en": "Do you offer catering services?", "ar": "هل تقدمون خدمات الطعام؟"}', '{"en": "Yes, we provide a variety of catering options.", "ar": "نعم، نقدم مجموعة متنوعة من خدمات الطعام."}', NOW(), NOW()),
+	(2, '{"en": "Can we bring our own decorations?", "ar": "هل يمكننا إحضار زينة خاصة بنا؟"}', '{"en": "Yes, as long as it complies with our safety guidelines.", "ar": "نعم، طالما أنها تتوافق مع إرشادات السلامة."}', NOW(), NOW()),
+	(3, '{"en": "Is there an outdoor seating area?", "ar": "هل توجد منطقة جلوس خارجية؟"}', '{"en": "Yes, we have a spacious outdoor area.", "ar": "نعم، لدينا منطقة جلوس خارجية واسعة."}', NOW(), NOW()),
+	(3, '{"en": "Do you allow pets?", "ar": "هل يسمح بالحيوانات الأليفة؟"}', '{"en": "Yes, pets are allowed in designated areas.", "ar": "نعم، يسمح بالحيوانات الأليفة في المناطق المخصصة."}', NOW(), NOW()),
+	(4, '{"en": "What is the maximum capacity?", "ar": "ما هي السعة القصوى؟"}', '{"en": "We can accommodate up to 200 guests.", "ar": "يمكننا استضافة ما يصل إلى 200 ضيف."}', NOW(), NOW()),
+	(4, '{"en": "Do you provide audio-visual equipment?", "ar": "هل توفرون معدات الصوت والفيديو؟"}', '{"en": "Yes, we offer AV equipment for events.", "ar": "نعم، نوفر معدات صوت وفيديو للحفلات."}', NOW(), NOW()),
+	(1, '{"en": "Is there a cancellation policy?", "ar": "هل توجد سياسة إلغاء؟"}', '{"en": "Yes, cancellations are allowed up to 48 hours in advance.", "ar": "نعم، يُسمح بالإلغاء قبل 48 ساعة من الموعد."}', NOW(), NOW()),
+	(2, '{"en": "Do you have wheelchair access?", "ar": "هل لديكم مداخل لذوي الاحتياجات الخاصة؟"}', '{"en": "Yes, our venue is fully wheelchair accessible.", "ar": "نعم، موقعنا مناسب تمامًا للكراسي المتحركة."}', NOW(), NOW());
+
+
+
+! Plicies 
+
+INSERT INTO policy (name, description, created_at, updated_at)
+VALUES
+('{"en": "Cancellation Policy", "ar": "سياسة الإلغاء"}', '{"en": "Cancellations must be made 48 hours in advance.", "ar": "يجب الإلغاء قبل 48 ساعة على الأقل."}', NOW(), NOW()),
+('{"en": "Pet Policy", "ar": "سياسة الحيوانات الأليفة"}', '{"en": "Pets are allowed in designated areas only.", "ar": "تُسمح الحيوانات الأليفة فقط في المناطق المخصصة."}', NOW(), NOW()),
+('{"en": "Smoking Policy", "ar": "سياسة التدخين"}', '{"en": "Smoking is prohibited indoors.", "ar": "التدخين ممنوع داخل الأماكن المغلقة."}', NOW(), NOW()),
+('{"en": "Noise Policy", "ar": "سياسة الضوضاء"}', '{"en": "Noise should be kept to a minimum after 10 PM.", "ar": "يجب تقليل الضوضاء بعد الساعة 10 مساءً."}', NOW(), NOW());
+
 
 */

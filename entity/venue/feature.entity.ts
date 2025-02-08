@@ -23,9 +23,9 @@ export class Feature {
   @DeleteDateColumn() // Soft delete column
   deleted_at: Date;
 
-  // @CreateDateColumn()
-  // created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-  // @UpdateDateColumn()
-  // updated_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 }

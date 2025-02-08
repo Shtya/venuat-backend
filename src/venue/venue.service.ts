@@ -39,11 +39,11 @@ export class VenueService extends BaseService<Venue> {
     'venueEquipments', 
     "reservations",
     "venuePackages",
-    "venueGalleries"
+    "venueGalleries",
     // 'venueFeatures', 'venueFeatures.feature', 'venueFeatures.feature.iconMedia', 
     // 'venuePolicies', 'venuePolicies.policy', 
-    // 'venueFAQs', 
-    // 'venueCalendars', 
+    'venueFAQs', 
+    'venueCalendars', 
   ];
 
 
@@ -64,24 +64,5 @@ export class VenueService extends BaseService<Venue> {
     });
   }
 
-  
-  //! Features
-  async addFeatureToVenue(venueId: number, addFeatureToVenueDto: AddFeatureToVenueDto): Promise<VenueFeature> {
-    const venue = await this.venueRepository.findOne({ where: { id: venueId } });
-    if (!venue) {
-      throw new NotFoundException(this.i18n.t("events.venue.venue_not_found_by_id"  , {args : {venueId}} ) ); //!`Venue with ID ${venueId} not found`
-    }
 
-    const feature = await this.featureRepository.findOne({ where: { id: addFeatureToVenueDto.feature_id } });
-    if (!feature) {
-      throw new NotFoundException(this.i18n.t("events.venue.feature_not_found"  , {args : {featureId : addFeatureToVenueDto.feature_id}} ) ); //!`Feature with ID ${addFeatureToVenueDto.feature_id} not found`
-    }
-
-    const venueFeature = this.venueFeatureRepository.create({
-      venue,
-      feature,
-    });
-
-    return this.venueFeatureRepository.save(venueFeature);
-  }
 }

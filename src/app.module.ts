@@ -7,24 +7,24 @@ import { join } from 'path';
 import { LoggingValidationPipe } from 'common/translationPipe';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './1_auth/auth.module';
-import { PropertyModule } from './21_property/property.module';
-import { CityModule } from './23_city/city.module';
+import { PropertyModule } from './27_property/property.module';
+import { CityModule } from './29_city/city.module';
 import { VenueModule } from './venue/venue.module';
 import { SharedModule } from './shared.module';
-import { CountryModule } from './22_country/country.module';
+import { CountryModule } from './28_country/country.module';
 import { MediaModule } from './media/media.module';
-import { OccasionTypeModule } from './24_occasion_type/occasion_type.module';
-import { FeatureModule } from './feature/feature.module';
+import { OccasionTypeModule } from './30_occasion_type/occasion_type.module';
+import { FeatureModule } from './25_feature/feature.module';
 import { ServiceModule } from './19_service/service.module';
 import { VenueServiceModule } from './18_venue-service/venue-service.module';
 import { EquipmentModule } from './17_equipment/equipment.module';
 import { VenueEquipmentModule } from './16_venue-equipment/venue-equipment.module';
-import { VenuePolicyModule } from './venue-policy/venue-policy.module';
-import { PolicyModule } from './policy/policy.module';
-import { FaqsModule } from './faqs/faqs.module';
-import { VenueCalendarModule } from './venue-calendar/venue-calendar.module';
+import { VenuePolicyModule } from './22_venue-policy/venue-policy.module';
+import { PolicyModule } from './23_policy/policy.module';
+import { FaqsModule } from './20_venue-faqs/faqs.module';
+import { VenueCalendarModule } from './21_venue-calendar/venue-calendar.module';
 import { ApiController } from './app.controller';
-import { ReservationModule } from './9_reservation/reservation.module';
+import { ReservationModule } from './09_reservation/reservation.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module'; 
 import { VenuePackageModule } from './10_venue-package/venue-package.module';
@@ -34,6 +34,7 @@ import { VenueGalleryModule } from './15_venue-gallery/venue-gallery.module';
 import { TicketModule } from './tickets/tickets.module'; 
 import { QueryFailedErrorFilter } from 'common/filters/QueryFailedErrorFilter';
 import { SettingsModule } from './settings/settings.module';
+import { VenueFeatureModule } from './24_venue-feature/venue-feature.module';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { SettingsModule } from './settings/settings.module';
     VenueGalleryModule,
     TicketModule,
     SettingsModule,
+    VenueFeatureModule,
   ],
   controllers: [ApiController],
   providers: [ LoggingValidationPipe , QueryFailedErrorFilter ],

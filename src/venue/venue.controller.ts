@@ -25,11 +25,7 @@ export class VenueController {
     return this.venueService.createCustom(createVenueDto);
   }
 
-  //! add features
-  @Post(':id/add-feature')
-  async addFeatureToVenue(@Param('id') venueId: number, @Body() addFeatureToVenueDto: AddFeatureToVenueDto) {
-    return this.venueService.addFeatureToVenue(venueId, addFeatureToVenueDto);
-  }
+
 
   @Get()
   async findAll(@Query() query  ) {

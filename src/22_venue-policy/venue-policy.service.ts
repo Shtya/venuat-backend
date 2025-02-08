@@ -4,6 +4,7 @@ import { AddPolicyToVenueDto } from 'dto/policy/policy.dto';
 import { Policy } from 'entity/venue/policy.entity';
 import { Venue } from 'entity/venue/venue.entity';
 import { VenuePolicy } from 'entity/venue/venue_policy.entity';
+import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,21 +15,22 @@ export class VenuePolicyService {
     @InjectRepository(Venue)
     private venueRepository: Repository<Venue>,
     @InjectRepository(Policy)
-    private policyRepository: Repository<Policy>
+    private policyRepository: Repository<Policy>,
+    private readonly i18n: I18nService,
   ) {}
 
   // Add a policy to a venue
   async addPolicyToVenue(venueId: number, addPolicyToVenueDto: AddPolicyToVenueDto): Promise<VenuePolicy> {
     const venue = await this.venueRepository.findOne({ where: { id: venueId } });
     if (!venue) {
-      throw new NotFoundException(`Venue with ID ${venueId} not found`);
+      throw new NotFoundException( this.i18n.t("events.venue_not_found2", { args: { venueId } }) );
     }
 
     const policy = await this.policyRepository.findOne({
       where: { id: addPolicyToVenueDto.policy_id },
     });
     if (!policy) {
-      throw new NotFoundException(`Policy with ID ${addPolicyToVenueDto.policy_id} not found`);
+      throw new NotFoundException( this.i18n.t("events.policy_not_found", { args: { policy_id: addPolicyToVenueDto.policy_id } }) );
     }
 
     const venuePolicy = this.venuePolicyRepository.create({
@@ -39,6 +41,7 @@ export class VenuePolicyService {
     return this.venuePolicyRepository.save(venuePolicy);
   }
 
+
   // Remove a policy from a venue
   async removePolicyFromVenue(venueId: number, policyId: number): Promise<{ message: string }> {
     const venuePolicy = await this.venuePolicyRepository.findOne({
@@ -46,18 +49,18 @@ export class VenuePolicyService {
     });
 
     if (!venuePolicy) {
-      throw new NotFoundException(`Policy with ID ${policyId} not found for Venue with ID ${venueId}`);
+      throw new NotFoundException( this.i18n.t("events.policy_not_found_for_venue", { args: { policyId, venueId } }) );
     }
 
     await this.venuePolicyRepository.remove(venuePolicy);
-    return { message: `Policy with ID ${policyId} has been removed from Venue with ID ${venueId}` };
+    return { message:  this.i18n.t("events.policy_removed_from_venue", { args: { policyId, venueId } })  };
   }
 
   // Get all policies for a venue
   async getPoliciesForVenue(venueId: number): Promise<any[]> {
     const venue = await this.venueRepository.findOne({ where: { id: venueId } });
     if (!venue) {
-      throw new NotFoundException(`Venue with ID ${venueId} not found`);
+      throw new NotFoundException( this.i18n.t("events.venue_not_found2", { args: { venueId } }) );
     }
 
     const venuePolicies = await this.venuePolicyRepository.find({

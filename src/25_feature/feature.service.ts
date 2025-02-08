@@ -13,12 +13,12 @@ export class FeatureService extends BaseService<Feature> {
     super(featureRepository);
   }
 
-  async removeSoftDelete(id: number) {
-    const feature = await this.featureRepository.findOne({ where: { id } });
-    if (!feature) {
-      throw new NotFoundException(`Feature with ID ${id} not found`);
-    }
-    await this.featureRepository.softDelete(id);
-    return { message: `Feature with ID ${id} has been soft deleted successfully.` };
-  }
+  // async removeSoftDelete(id: number) {
+  //   const feature = await this.featureRepository.findOne({ where: { id } });
+  //   if (!feature) {
+  //     throw new NotFoundException(`Feature with ID ${id} not found`);
+  //   }
+  //   await this.featureRepository.softDelete(id);
+  //   return { message: `Feature with ID ${id} has been soft deleted successfully.` };
+  // }
 }
