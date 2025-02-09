@@ -1,8 +1,8 @@
 import { Controller, Post, Get, Body, Param, Delete, Query, UseGuards } from '@nestjs/common'; 
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from 'dto/venue/reservation.dto';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 
 @Controller('reservations')

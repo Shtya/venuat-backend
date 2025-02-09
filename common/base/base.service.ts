@@ -173,7 +173,6 @@ export class BaseService<T> {
     //! Validate and apply relations
     if (relations?.length > 0) {
       const invalidRelations = relations.filter(relation => !this.repository.metadata.relations.some(rel => rel.propertyName === relation));
-      console.log(invalidRelations , relations)
       if (invalidRelations.length > 0) {
         throw new BadRequestException(this.i18n.t('events.invalid_relations', { args: { relations: invalidRelations.join(', ') } }));
       }

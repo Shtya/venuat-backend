@@ -2,8 +2,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
 import { EquipmentService } from './equipment.service';
 import { CreateEquipmentDto, UpdateEquipmentDto } from 'dto/venue/equipment.dto';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 import { checkFieldExists } from 'utils/checkFieldExists';
 import { InjectRepository } from '@nestjs/typeorm';

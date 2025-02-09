@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity("website_settings")
 export class WebsiteSettings {
@@ -21,4 +21,10 @@ export class WebsiteSettings {
     question: Record<string, string>; 
     answer: Record<string, string>; 
   }[]; // Each FAQ will now have a unique ID
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }

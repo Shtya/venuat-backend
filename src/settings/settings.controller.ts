@@ -40,7 +40,7 @@ export class WebsiteSettingsController {
   async update(@Param('id') id: number, @Body() updateWebsiteSettingsDto: UpdateWebsiteSettingsDto): Promise<WebsiteSettings> {
     const websiteSettings = await this.websiteSettingsService.findOne(id);
     if (!websiteSettings) {
-      throw new NotFoundException(`WebsiteSettings with id ${id} not found`);
+      throw new NotFoundException(this.websiteSettingsService.i18n.t('events.website_settings_not_found', { args: { id } }));
     }
     return await this.websiteSettingsService.updateCustom(id, updateWebsiteSettingsDto);
   }

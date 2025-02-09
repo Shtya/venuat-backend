@@ -9,8 +9,8 @@ import { Media } from 'entity/media/media.entity';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'common/multer/multer.config';
 import { multerMultiplyOptions } from 'common/multer/multer_multiple';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 
 @Controller('venue-gallery')

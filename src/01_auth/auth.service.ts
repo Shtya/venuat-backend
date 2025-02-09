@@ -167,12 +167,10 @@ export class AuthService {
   }
 
   async verifyRefreshToken(token: string): Promise<any> {
-    console.log("first")
     if(!token) globalError(this.i18n.t('events.refresh_token_required'), 400);
     const payload = await this.jwtService.verifyAsync(token, { secret: process.env.JWT_REFRESH_SECRET });
     
     if (!payload) {
-      console.log("first")
       throw new UnauthorizedException(this.i18n.t('events.invalid_refresh_token'));
     }
 

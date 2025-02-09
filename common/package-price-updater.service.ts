@@ -34,7 +34,6 @@ export class PackagePriceUpdate {
     
     const venuePackage = await this.venuePackageRepo.findOne({ where: { id: packageId } });
     const venue :any = await this.venueRepo.find({ where: { id: venuePackage.venue_id } });
-   console.log(venue[0].price) // 1200 price of the hall
 
    const venuePrice = venue?.[0].price ?? 0; 
 

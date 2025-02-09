@@ -20,7 +20,7 @@ export class MediaService extends BaseService<Media> {
     const { model_id, manipulations, custom_properties, name, order } = dto;
 
     if (!file && !dto.file_name) {
-      throw new BadRequestException('File is required.');
+      throw new BadRequestException( this.i18n.t("events.file_required")); //! 'File is required.'
     }
 
     const file_name = file ? file.filename : dto.file_name;
@@ -28,6 +28,12 @@ export class MediaService extends BaseService<Media> {
     const disk = file ? 'local' : dto.disk; // Default to 'local' if file is provided
     const size = file ? file.size : dto.size;
     const fileUrl = `${process.env.BASE_URL}/uploads/${query.folder}/${query.collection}/${file.filename}`;
+
+    
+
+
+
+
 
     // Create media entity
     const media = this.mediaRepository.create({
@@ -60,7 +66,7 @@ export class MediaService extends BaseService<Media> {
     const existingMedia = await this.mediaRepository.findOne({ where: { id } });
 
     if (!existingMedia) {
-      throw new NotFoundException(`Media with ID ${id} not found.`);
+      throw new NotFoundException( this.i18n.t("events.media_not_found_by_id", { args: { id: id } })); //! `Media with ID ${id} not found.`
     }
 
     // Handle file update
@@ -111,7 +117,7 @@ export class MediaService extends BaseService<Media> {
     const media = await this.mediaRepository.findOne({ where: { id: id } });
 
     if (!media) {
-      throw new NotFoundException(`Media with file name ${fileName} not found.`);
+      throw new NotFoundException( this.i18n.t("events.media_not_found_by_filename", { args: { fileName: id } })); //! `Media with file name ${fileName} not found.`
     }
     const filePath = `./uploads/${media.model_type}/${media.collection_name}/${media.file_name}`;
     if (fs.existsSync(filePath)) {
@@ -119,6 +125,6 @@ export class MediaService extends BaseService<Media> {
     }
 
     await this.mediaRepository.remove(media);
-    return { message: 'Media deleted successfully.' };
+    return { message:  this.i18n.t("events.media_deleted_success") }; //! 'Media deleted successfully.'
   }
 }

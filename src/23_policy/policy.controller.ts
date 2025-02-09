@@ -3,9 +3,9 @@ import { PoliciesService } from './policy.service';
 
 import { Policy } from 'entity/venue/policy.entity';
 import { CreatePolicyDto, UpdatePolicyDto } from 'dto/policy/policy.dto';
-import { AuthGuard } from 'src/1_auth/auth.guard';
+import { AuthGuard } from 'src/01_auth/auth.guard';
 import { EPermissions } from 'enums/Permissions.enum';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 
 @Controller('policies')
 export class PoliciesController {

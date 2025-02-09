@@ -35,13 +35,13 @@ export class VenueService extends BaseService<Venue> {
   public relations: string[] = [
     'occasion', 
     'property',
-    'venueServices', // 'venueServices.service',
+    'venueServices', 
     'venueEquipments', 
     "reservations",
     "venuePackages",
     "venueGalleries",
-    // 'venueFeatures', 'venueFeatures.feature', 'venueFeatures.feature.iconMedia', 
-    // 'venuePolicies', 'venuePolicies.policy', 
+    'venueFeatures', 'venueFeatures.feature', 
+    'venuePolicies', 'venuePolicies.policy', 
     'venueFAQs', 
     'venueCalendars', 
   ];

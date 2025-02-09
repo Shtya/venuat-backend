@@ -1,4 +1,3 @@
-// src/media/dto/create-media.dto.ts
 import { PartialType } from '@nestjs/mapped-types';
 import {
   IsNotEmpty,
@@ -9,52 +8,51 @@ import {
 } from 'class-validator';
 
 export class CreateMediaDto {
-  @IsNumberString({}, { message: 'Model ID must be a number or a string representing a number.' })
-  @IsNotEmpty({ message: 'Model ID is required.' })
+  @IsNumberString({}, { message: 'events.model_id_invalid' })
+  @IsNotEmpty({ message: 'events.model_id_required' })
   model_id: string | number;
 
-  @IsString({ message: 'Name must be a string.' })
-  @IsNotEmpty({ message: 'Name is required.' })
+  @IsString({ message: 'events.name_invalid' })
+  @IsNotEmpty({ message: 'events.name_required' })
   name: string;
 
-  @IsString({ message: 'File name must be a string.' })
-  @IsOptional() // Make file_name optional
+  @IsString({ message: 'events.file_name_invalid' })
+  @IsOptional()
   file_name?: string;
 
-  @IsString({ message: 'MIME type must be a string.' })
-  @IsOptional() // Make mime_type optional
+  @IsString({ message: 'events.mime_type_invalid' })
+  @IsOptional()
   mime_type?: string;
 
-  @IsString({ message: 'Disk must be a string.' })
-  @IsOptional() // Make disk optional
+  @IsString({ message: 'events.disk_invalid' })
+  @IsOptional()
   disk?: string;
 
-  @IsNumberString({}, { message: 'Size must be a number or a string representing a number.' })
-  @IsOptional() // Make size optional
+  @IsNumberString({}, { message: 'events.size_invalid' })
+  @IsOptional()
   size?: string | number;
 
-  @IsJSON({ message: 'Manipulations must be a valid JSON object.' })
-  @IsOptional() // Make manipulations optional
+  @IsJSON({ message: 'events.manipulations_invalid' })
+  @IsOptional()
   manipulations?: Record<string, any>;
 
-  @IsJSON({ message: 'Custom properties must be a valid JSON object.' })
-  @IsOptional() // Make custom_properties optional
+  @IsJSON({ message: 'events.custom_properties_invalid' })
+  @IsOptional()
   custom_properties?: Record<string, any>;
 
-  @IsNumberString({}, { message: 'Order must be a number or a string representing a number.' })
-  @IsNotEmpty({ message: 'Order is required.' })
+  @IsNumberString({}, { message: 'events.order_invalid' })
+  @IsNotEmpty({ message: 'events.order_required' })
   order: string | number;
 }
 
 export class UploadQueryDto {
-  @IsString({ message: 'Folder must be a string.' })
-  @IsNotEmpty({ message: 'Folder query is required.' })
+  @IsString({ message: 'events.folder_invalid' })
+  @IsNotEmpty({ message: 'events.folder_required' })
   folder: string;
 
-  @IsString({ message: 'Collection must be a string.' })
-  @IsNotEmpty({ message: 'collection query is required.' })
+  @IsString({ message: 'events.collection_invalid' })
+  @IsNotEmpty({ message: 'events.collection_required' })
   collection: string;
 }
 
 export class UpdateMediaDto extends PartialType(CreateMediaDto) {}
-

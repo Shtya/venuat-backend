@@ -7,8 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from 'entity/venue/service.entity';
 import { Repository } from 'typeorm';
 import { Media } from 'entity/media/media.entity';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 
 @Controller('services')

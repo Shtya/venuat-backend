@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { OccasionTypeService } from './occasion_type.service';
 import { CreateOccasionTypeDto, UpdateOccasionTypeDto } from 'dto/venue/occasion_type.dto';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 import { checkFieldExists } from 'utils/checkFieldExists';
 

@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } fro
 import { VenueCalendarService } from './venue-calendar.service';
 import { VenueCalendar } from 'entity/venue/venue_calendar.entity';
 import { CreateVenueCalendarDto, UpdateVenueCalendarDto } from 'dto/venue/calendar.dto';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 
 @Controller('venue-calendar')

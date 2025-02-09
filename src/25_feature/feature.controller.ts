@@ -5,8 +5,8 @@ import { checkFieldExists } from 'utils/checkFieldExists';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Media } from 'entity/media/media.entity';
 import { Repository } from 'typeorm';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 
 @Controller('feature')

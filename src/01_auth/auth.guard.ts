@@ -45,10 +45,8 @@ export class AuthGuard implements CanActivate {
       }
 
       // If permissions are required, check if the user has the required permission in their role
-      // console.log(user)
       if (requiredPermissions) {
         const hasPermission = await this.hasPermission(user, requiredPermissions);
-        // console.log(requiredPermissions , hasPermission)
 
         if (!hasPermission) {
           throw new ForbiddenException(this.i18n.t('events.permission_denied' , {args : {permission : requiredPermissions}}));

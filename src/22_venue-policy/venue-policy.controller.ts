@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Param, Delete, Body, NotFoundException, UseGuards } from '@nestjs/common';
 import { VenuePolicyService } from './venue-policy.service';
 import { AddPolicyToVenueDto } from 'dto/policy/policy.dto';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 
 @Controller('venues')

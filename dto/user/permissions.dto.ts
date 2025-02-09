@@ -1,13 +1,13 @@
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class BulkCreatePermissionDto {
-  @IsArray({ message: 'Permissions must be an array' })
-  @IsNotEmpty({ message: 'Permissions array cannot be empty' })
+  @IsArray({ message: 'events.permissions_array_invalid' })
+  @IsNotEmpty({ message: 'events.permissions_array_required' })
   permissions: CreatePermissionDto[];
 }
 
 export class CreatePermissionDto {
-  @IsString({ message: 'Permission name must be a string' })
-  @IsNotEmpty({ message: 'Permission name is required' })
+  @IsString({ message: 'events.permission_name_invalid' })
+  @IsNotEmpty({ message: 'events.permission_name_required' })
   permission_name: string;
 }

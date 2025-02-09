@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Param, Delete, Body, Query, UseGuards } from '@nestjs/common';
 import { VenueFeatureService } from './venue-feature.service';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 import { AddFeatureToVenueDto } from 'dto/venue/feature.dto';
 

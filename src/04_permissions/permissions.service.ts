@@ -25,7 +25,8 @@ export class PermissionsService extends BaseService<Permission> {
     });
 
     if (existingPermissions.length > 0) {
-      throw new BadRequestException('Some permissions already exist.');
+      throw new BadRequestException(this.i18n.t("events.permissions_already_exist")
+    );
     }
 
     // Create new permissions

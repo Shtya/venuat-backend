@@ -7,8 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { City } from 'entity/property/city.entity';
 import { Repository } from 'typeorm';
 import { Country } from 'entity/property/country.entity';
-import { AuthGuard } from 'src/1_auth/auth.guard';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 import { I18nService } from 'nestjs-i18n';
 

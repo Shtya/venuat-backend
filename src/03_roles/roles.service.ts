@@ -18,18 +18,14 @@ export class RolesService extends BaseService<Role> {
   }
 
   async createCustom(createRoleDto: CreateRoleDto): Promise<Role> {
-    const { name  , permissions }   = createRoleDto;
+    const { name, permissions } = createRoleDto;
 
     const existingRole = await this.roleRepository.findOne({ where: { name } });
-    if (existingRole) 
-      throw new BadRequestException(`Role ( ${name} ) is already exists. `);
-    
+    if (existingRole) throw new BadRequestException(this.i18n.t('events.role_already_exists', { args: { name: name } }));
 
     const role = this.roleRepository.create({ name });
 
-    if (permissions && permissions.length > 0) 
-      role.permissions = await this.getValidPermissions(permissions);
-    
+    if (permissions && permissions.length > 0) role.permissions = await this.getValidPermissions(permissions);
 
     const savedRole = await this.roleRepository.save(role);
     return this.findOne(savedRole.id);
@@ -40,12 +36,11 @@ export class RolesService extends BaseService<Role> {
     return this.roleRepository.find({ relations: ['permissions'] });
   }
 
-
   /** ✅ Find One Role */
   async findOne(id: number): Promise<Role> {
     const role = await this.roleRepository.findOne({ where: { id }, relations: ['permissions'] });
     if (!role) {
-      throw new NotFoundException('Role not found.');
+      throw new NotFoundException(this.i18n.t('events.role_not_found'));
     }
     return role;
   }
@@ -57,7 +52,7 @@ export class RolesService extends BaseService<Role> {
     if (updateRoleDto.name) {
       const existingRole = await this.roleRepository.findOne({ where: { name: updateRoleDto.name } });
       if (existingRole && existingRole.id !== id) {
-        throw new BadRequestException('Role name must be unique.');
+        throw new BadRequestException(this.i18n.t('events.role_name_unique'));
       }
       role.name = updateRoleDto.name;
     }
@@ -73,15 +68,15 @@ export class RolesService extends BaseService<Role> {
   /** ✅ Add Single Permission */
   async addPermissions(roleId: number, permissionIds: number[]): Promise<Role> {
     const role = await this.findOne(roleId);
-  
+
     const permissions = await this.permissionRepository.find({
       where: { id: In(permissionIds) }, // Use In to filter by multiple IDs
     });
-  
+
     if (permissions.length !== permissionIds.length) {
-      throw new NotFoundException('Some permissions not found.');
+      throw new NotFoundException(this.i18n.t('events.permissions_not_found'));
     }
-  
+
     role.permissions.push(...permissions); // Add all permissions to role
     await this.roleRepository.save(role);
     return this.findOne(roleId);
@@ -102,7 +97,7 @@ export class RolesService extends BaseService<Role> {
     });
 
     if (permissionEntities.length !== permissionIds.length) {
-      throw new BadRequestException('One or more permissions are invalid.');
+      throw new BadRequestException(this.i18n.t('events.invalid_permissions'));
     }
 
     return permissionEntities;

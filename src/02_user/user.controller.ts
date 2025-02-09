@@ -1,10 +1,10 @@
 import { Controller, Get , Body, Patch, Param, Delete, UseGuards , UseInterceptors, UploadedFile , Req , Query, Request, ForbiddenException } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthGuard } from 'src/1_auth/auth.guard';
+import { AuthGuard } from 'src/01_auth/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'common/multer/multer.config';
 import { UpdateUserDto } from 'dto/user.dto';
-import { Permissions } from 'src/1_auth/permissions.decorators';
+import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
 import { checkFieldExists } from 'utils/checkFieldExists';
 import { InjectRepository } from '@nestjs/typeorm';
