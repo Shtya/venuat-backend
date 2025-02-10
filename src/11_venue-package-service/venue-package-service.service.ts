@@ -44,10 +44,30 @@ export class VenuePackageServiceService extends BaseService<VenuePackageService>
   }
   
 
-  async customDelete (id : number){
-    const packageId : any = await this.venuePackageServicerepo.find({ where: { id  }, relations: ['package']  })  ;
-    await this.priceUpdater.updatePackagePrice(packageId?.[0]?.package?.id);
+  async updateServiceInPackage(id: number, newPrice: number) {
+    const venuePackageService = await this.venuePackageServicerepo.findOne({ where: { id }, relations: ['package'] });
+
+    if (!venuePackageService) {
+      throw new Error('Service not found in package');
+    }
+
+    venuePackageService.price = newPrice;
+    await this.venuePackageServicerepo.save(venuePackageService);
+    await this.priceUpdater.updatePackagePrice(venuePackageService.package.id);
+
+    return venuePackageService;
   }
-  
-  
+
+  async removeServiceFromPackage(id: number) {
+    const venuePackageService = await this.venuePackageServicerepo.findOne({ where: { id }, relations: ['package'] });
+
+    if (!venuePackageService) {
+      throw new Error('Service not found in package');
+    }
+
+    await this.venuePackageServicerepo.remove(venuePackageService);
+    await this.priceUpdater.updatePackagePrice(venuePackageService.package.id);
+
+    return { message: 'Service removed from package successfully' };
+  }
 }

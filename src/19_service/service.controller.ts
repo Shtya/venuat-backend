@@ -1,5 +1,5 @@
 // src/service/service.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto, UpdateServiceDto } from 'dto/venue/service.dto';
 import { checkFieldExists } from 'utils/checkFieldExists';
@@ -14,8 +14,8 @@ import { EPermissions } from 'enums/Permissions.enum';
 @Controller('services')
 export class ServiceController {
   constructor(
-    @InjectRepository(Media)
-    private readonly mediaRepository: Repository<Media>,
+    @InjectRepository(Media)  private readonly mediaRepository: Repository<Media>,
+    @InjectRepository(Service) private readonly serviceRepository: Repository<Service>,
     private readonly serviceService: ServiceService
   ) {}
 
@@ -24,10 +24,15 @@ export class ServiceController {
   @Post()
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.SERVICES_CREATE)
-  async create(@Body() dto: CreateServiceDto) {
-    await checkFieldExists(this.mediaRepository, { id: dto.icon_media_id }, this.serviceService.i18n.t("events.media.not_found", { args: { id: dto.icon_media_id } })    , true);
-    return this.serviceService.create(dto);
+  async create(@Body() dto: CreateServiceDto, @Req() req: any) {
+    await checkFieldExists(this.mediaRepository, { id: dto.icon_media_id }, this.serviceService.i18n.t("events.media.not_found", { args: { id: dto.icon_media_id } })    , true , 404);
+    
+    const user = req.user; 
+    const isAdmin = user.role.name === 'admin'; 
+  
+    return this.serviceService.customCreate(dto, user.id, isAdmin);
   }
+
 
 
 
@@ -37,7 +42,8 @@ export class ServiceController {
   @Permissions(EPermissions.SERVICES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
-    
+    restQueryParams["field:is_predefined"] = true;
+
     return this.serviceService.FIND(
       'service',
       search ,
@@ -52,6 +58,15 @@ export class ServiceController {
     );
   }
 
+
+  
+    @Get('global-and-user')
+    @UseGuards(AuthGuard)
+    @Permissions(EPermissions.EQUIPMENT_READ)
+    async findGlobalAndUserEquipment(@Query() query, @Req() req) {
+        const userId = req.user.id;  // Extract user ID from the token
+        return this.serviceRepository.find({where: [{ user_id: userId } , {is_predefined : true} ]})
+    }
 
   @Get(':id')
   @UseGuards(AuthGuard)

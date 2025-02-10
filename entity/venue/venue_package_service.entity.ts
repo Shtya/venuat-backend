@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Up
 import { VenuePackage } from './venue_package.entity';
 import { Service } from './service.entity';
 
+
 @Entity('venue_package_service')
 export class VenuePackageService {
   @PrimaryGeneratedColumn()

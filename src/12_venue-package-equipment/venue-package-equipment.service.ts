@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'common/base/base.service';
-import { PackagePriceUpdate } from 'common/package-price-updater.service'; // Service for recalculating price
+import { PackagePriceUpdate } from 'common/package-price-updater.service';
 import { CreateVenuePackageEquipmentDto } from 'dto/venue/venue_package_equipment.dto';
 import { VenuePackageEquipment } from 'entity/venue/venue_package_equipment.entity';
 import { VenuePackage } from 'entity/venue/venue_package.entity';
@@ -20,7 +20,7 @@ export class VenuePackageEquipmentService extends BaseService<VenuePackageEquipm
     @InjectRepository(Equipment)
     private equipmentEntityRepo: Repository<Equipment>,
 
-    private readonly priceUpdater: PackagePriceUpdate // Inject price updater service
+    private readonly priceUpdater: PackagePriceUpdate
   ) {
     super(equipmentRepo);
   }
@@ -29,7 +29,7 @@ export class VenuePackageEquipmentService extends BaseService<VenuePackageEquipm
     const equipment = await this.equipmentEntityRepo.findOne({ where: { id: dto.equipment } });
 
     if (!equipment) {
-      throw new Error(this.i18n.t("events.equipment_not_found2")); //! 'Equipment not found'
+      throw new NotFoundException('Equipment not found');
     }
 
     const venuePackageEquipment = this.equipmentRepo.create({
@@ -40,28 +40,40 @@ export class VenuePackageEquipmentService extends BaseService<VenuePackageEquipm
     });
 
     await this.equipmentRepo.save(venuePackageEquipment);
-
-    // 🔄 Recalculate and update package price
     await this.priceUpdater.updatePackagePrice(dto.package);
 
     return venuePackageEquipment;
   }
 
   async getPackageEquipment(packageId: number) {
-    return this.equipmentRepo.find({ where: { package: { id: packageId } }, relations: ['package'] });
+    return this.equipmentRepo.find({ where: { package: { id: packageId } }, relations: ["equipment" , "equipment.iconMedia" ] });
   }
 
-  async deleteEquipmentAndUpdatePrice(equipmentId: number): Promise<void> {
-    const equipment = await this.equipmentRepo.findOne({ where: { id: equipmentId }, relations: ['package'] });
+  async updateEquipmentInPackage(id: number, newPrice: number, newCount: number) {
+    const venuePackageEquipment = await this.equipmentRepo.findOne({ where: { id }, relations: ['package'] });
 
-    if (!equipment) {
-      throw new NotFoundException(this.i18n.t("events.equipment_not_found2")); //! 'Equipment not found'
+    if (!venuePackageEquipment) {
+      throw new NotFoundException('Equipment not found in package');
     }
 
-    const packageId = equipment.package.id;
+    venuePackageEquipment.price = newPrice;
+    venuePackageEquipment.count = newCount;
+    await this.equipmentRepo.save(venuePackageEquipment);
+    await this.priceUpdater.updatePackagePrice(venuePackageEquipment.package.id);
 
-    await this.equipmentRepo.delete(equipmentId);
+    return venuePackageEquipment;
+  }
 
-    await this.priceUpdater.updatePackagePrice(packageId);
+  async removeEquipmentFromPackage(id: number) {
+    const venuePackageEquipment = await this.equipmentRepo.findOne({ where: { id }, relations: ['package'] });
+
+    if (!venuePackageEquipment) {
+      throw new NotFoundException('Equipment not found in package');
+    }
+
+    await this.equipmentRepo.remove(venuePackageEquipment);
+    await this.priceUpdater.updatePackagePrice(venuePackageEquipment.package.id);
+
+    return { message: 'Equipment removed from package successfully' };
   }
 }

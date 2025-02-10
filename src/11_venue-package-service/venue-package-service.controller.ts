@@ -1,4 +1,4 @@
-import { Controller, Post, Get , Query , Body, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get , Query , Body, Param, Delete, UseGuards, Patch } from '@nestjs/common';
 import { VenuePackageServiceService } from './venue-package-service.service';
 import { CreateVenuePackageServiceDto } from 'dto/venue/venue_package_service.dto';
 import { checkFieldExists } from 'utils/checkFieldExists';
@@ -33,26 +33,6 @@ export class VenuePackageServiceController {
   }
 
 
-  @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_PACKAGE_SERVICE_READ)
-  async findAll(@Query() query  ) {
-    const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
-    
-    return this.service.FIND(
-      'venue_package_service',
-      search ,
-      page,
-      limit,
-      sortBy,
-      sortOrder,
-      [],                // exclude some fields
-      ["package"],                // Relations 
-      ["price" ],         // search parameters
-      restQueryParams    // search with fields
-    );
-  }
-
 
   @Get(':packageId/services')
   @UseGuards(AuthGuard)
@@ -62,12 +42,20 @@ export class VenuePackageServiceController {
   }
 
 
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_PACKAGE_SERVICE_UPDATE)
+  async updateService(@Param('id') id: number, @Body('price') price: number) {
+    return this.service.updateServiceInPackage(id, price);
+  }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_SERVICE_DELETE)
-  async delete(@Param('id') id: number) {
-    await this.service.customDelete(id)
-    return this.service.remove(id);
+  async deleteService(@Param('id') id: number) {
+    return this.service.removeServiceFromPackage(id);
   }
+
+
+
 }

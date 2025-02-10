@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import { VenueService } from './venue_service.entity';
 import { Media } from 'entity/media/media.entity';
 
-
 @Entity()
 export class Service {
   @PrimaryGeneratedColumn()
@@ -27,14 +26,14 @@ export class Service {
   @OneToMany(() => VenueService, venueService => venueService.service)
   venueServices: VenueService[];
 
+  @Column({ nullable: true }) // Nullable to allow global equipment
+  user_id: number;
 
-  
-    // @OneToMany(() => VenuePackageEquipment, (e) => e.equipment)
-    // equipments: VenuePackageEquipment[];
-  
-  
-    // @OneToMany(() => VenueEquipment, venueEquipment => venueEquipment.equipment)
-    // venueEquipments: VenueEquipment[];
+  // @OneToMany(() => VenuePackageEquipment, (e) => e.equipment)
+  // equipments: VenuePackageEquipment[];
+
+  // @OneToMany(() => VenueEquipment, venueEquipment => venueEquipment.equipment)
+  // venueEquipments: VenueEquipment[];
 
   @CreateDateColumn()
   created_at: Date;

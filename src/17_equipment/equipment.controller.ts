@@ -1,5 +1,5 @@
 // src/equipment/equipment.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { EquipmentService } from './equipment.service';
 import { CreateEquipmentDto, UpdateEquipmentDto } from 'dto/venue/equipment.dto';
 import { AuthGuard } from 'src/01_auth/auth.guard';
@@ -19,17 +19,25 @@ export class EquipmentController {
   @Post()
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.EQUIPMENT_CREATE)
-  async create(@Body() dto: CreateEquipmentDto) {
+  async create(@Body() dto: CreateEquipmentDto, @Req() req: any) {
     await checkFieldExists(this.mediaRepo, { id: dto.icon_media_id }, this.equipmentService.i18n.t("events.media.not_found", { args: { id: dto.icon_media_id } })    , true , 404);
-    return this.equipmentService.create(dto);
+    
+    const user = req.user; 
+    const isAdmin = user.role.name === 'admin'; 
+  
+    return this.equipmentService.customCreate(dto, user.id, isAdmin);
   }
+
+
 
   @Get()
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.EQUIPMENT_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
+    restQueryParams["field:is_predefined"] = true;
     
+
     return this.equipmentService.FIND(
       'equipment',
       search ,
@@ -42,6 +50,15 @@ export class EquipmentController {
       ["name" ],         // search parameters
       restQueryParams    // search with fields
     );
+  }
+
+
+  @Get('global-and-user')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.EQUIPMENT_READ)
+  async findGlobalAndUserEquipment(@Query() query, @Req() req) {
+      const userId = req.user.id;  // Extract user ID from the token
+      return this.equipmentService.findGlobalAndUserEquipment(userId);
   }
 
 

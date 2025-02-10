@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Delete, Patch, UseGuards } from '@nestjs/common';
 import { CreateVenuePackageEquipmentDto } from 'dto/venue/venue_package_equipment.dto';
 import { VenuePackageEquipmentService } from './venue-package-equipment.service';
 import { VenuePackage } from 'entity/venue/venue_package.entity';
@@ -14,7 +14,7 @@ import { EPermissions } from 'enums/Permissions.enum';
 export class VenuePackageEquipmentController {
   constructor(
     @InjectRepository(VenuePackage) readonly packageRepo: Repository<VenuePackage>,
-    @InjectRepository(Equipment) readonly serviceRepo: Repository<Equipment>,
+    @InjectRepository(Equipment) readonly equipmentRepo: Repository<Equipment>,
     private readonly service: VenuePackageEquipmentService
   ) {}
 
@@ -22,44 +22,29 @@ export class VenuePackageEquipmentController {
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_EQUIPMENT_CREATE)
   async create(@Body() dto: CreateVenuePackageEquipmentDto) {
-    await checkFieldExists(this.packageRepo, { id: dto.package }, this.service.i18n.t('events.package_not_found') , true, 404); //! "Package doesn't exist."
-    await checkFieldExists(this.serviceRepo, { id: dto.equipment }, this.service.i18n.t('events.equipment_not_found2') , true, 404); //! "equipment doesn't exist."
+    await checkFieldExists(this.packageRepo, { id: dto.package }, 'Package not found', true, 404);
+    await checkFieldExists(this.equipmentRepo, { id: dto.equipment }, 'Equipment not found', true, 404);
     return this.service.addEquipmentToPackage(dto);
-  }
-
-  
-
-  @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_PACKAGE_EQUIPMENT_READ)
-  async findAll(@Query() query) {
-    const { page, limit, search, sortBy, sortOrder, ...restQueryParams } = query;
-
-    return this.service.FIND(
-      'venue_package_equipment',
-      search,
-      page,
-      limit,
-      sortBy,
-      sortOrder,
-      [], // exclude some fields
-      ['package'], // Relations
-      ['count' , "price"], // search parameters
-      restQueryParams // search with fields
-    );
   }
 
   @Get(':packageId/equipment')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_EQUIPMENT_READ)
-  async getEquipments(@Param('packageId') packageId: number) {
+  async getEquipment(@Param('packageId') packageId: number) {
     return this.service.getPackageEquipment(packageId);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_PACKAGE_EQUIPMENT_UPDATE)
+  async updateEquipment(@Param('id') id: number, @Body('price') price: number, @Body('count') count: number) {
+    return this.service.updateEquipmentInPackage(id, price, count);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_EQUIPMENT_DELETE)
-  async delete(@Param('id') id: number) {
-    await this.service.deleteEquipmentAndUpdatePrice(id);
+  async deleteEquipment(@Param('id') id: number) {
+    return this.service.removeEquipmentFromPackage(id); 
   }
 }

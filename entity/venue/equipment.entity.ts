@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import { VenueEquipment } from './venue_equipment.entity';
 import { Media } from 'entity/media/media.entity';
 import { VenuePackageEquipment } from './venue_package_equipment.entity';
+import { User } from 'entity/user/user.entity';
 
 @Entity()
 export class Equipment {
@@ -27,6 +28,10 @@ export class Equipment {
 
   @OneToMany(() => VenueEquipment, venueEquipment => venueEquipment.equipment)
   venueEquipments: VenueEquipment[];
+
+
+  @Column({ nullable: true }) // Nullable to allow global equipment
+  user_id: number;
 
   @CreateDateColumn()
   created_at: Date;

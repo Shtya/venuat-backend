@@ -36,6 +36,7 @@ import { QueryFailedErrorFilter } from 'common/filters/QueryFailedErrorFilter';
 import { SettingsModule } from './settings/settings.module';
 import { VenueFeatureModule } from './24_venue-feature/venue-feature.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot(),

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Put, Delete, UseGuards, Query, Req } from '@nestjs/common';
 import { VenuePackageService } from './venue-package.service';
 import { CreateVenuePackageDto, UpdateVenuePackageDto } from 'dto/venue/venue_package.dto';
 import { checkFieldExists } from 'utils/checkFieldExists';
@@ -12,20 +12,15 @@ import { EPermissions } from 'enums/Permissions.enum';
 @Controller('venue-packages')
 export class VenuePackageController {
   constructor(
-    @InjectRepository(Venue)
-    private readonly venueRepo: Repository<Venue>,  
+    
     private readonly venuePackageService: VenuePackageService) {}
 
 
   @Post()
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_CREATE)
-  async create(@Body() dto: CreateVenuePackageDto) {
-    await checkFieldExists( this.venueRepo , {id : dto.venue_id} , "venue doesn't exist." , true , 404  )
-    const venue = await this.venueRepo.findOne({where : {id : dto.venue_id}})
-
-    dto.package_price = venue?.price || 0
-    return this.venuePackageService.create(dto);
+  async create(@Body() dto: CreateVenuePackageDto , @Req() req) {
+    return this.venuePackageService.customCreate(dto , req)
   }
 
 

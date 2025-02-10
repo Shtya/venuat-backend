@@ -3,13 +3,92 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VenuePackage } from 'entity/venue/venue_package.entity';
 import { BaseService } from 'common/base/base.service';
+import { Equipment } from 'entity/venue/equipment.entity';
+import { Service } from 'entity/venue/service.entity';
+import { checkFieldExists } from 'utils/checkFieldExists';
+import { Venue } from 'entity/venue/venue.entity';
+import { CreateVenuePackageDto } from 'dto/venue/venue_package.dto';
+import { VenuePackageEquipment } from 'entity/venue/venue_package_equipment.entity';
+import { VenuePackageService as VenuePackageServiceDif } from 'entity/venue/venue_package_service.entity';
 
 @Injectable()
 export class VenuePackageService extends BaseService<VenuePackage> {
   constructor(
-    @InjectRepository(VenuePackage)
-    private venuePackageRepo: Repository<VenuePackage>) {
+    @InjectRepository(Venue)  private readonly venueRepo: Repository<Venue>,  
+    @InjectRepository(Equipment) private equipmentRepo: Repository<Equipment>,
+    @InjectRepository(Service) private serviceRepo: Repository<Service>,
+    @InjectRepository(VenuePackage) private venuePackageRepo: Repository<VenuePackage>,
+
+    @InjectRepository(VenuePackageEquipment) private readonly venuePackageEquipmentRepo: Repository<VenuePackageEquipment>,
+
+    @InjectRepository(VenuePackageServiceDif) private readonly venuePackageServiceRepo: Repository<VenuePackageServiceDif>,
+  ) {
     super(venuePackageRepo);
   }
+
+
+
+
+
+  async customCreate (dto : CreateVenuePackageDto , req){
+    await checkFieldExists(this.venueRepo, { id: dto.venue_id }, "venue doesn't exist.", true, 404);
+  const venue = await this.venueRepo.findOne({ where: { id: dto.venue_id } });
+
+  dto.package_price = venue?.price || 0;
+
+  // جلب المعدات والخدمات المتاحة للمستخدم والتي هي محددة مسبقًا
+  const predefinedEquipments = await this.getPredefinedEquipments(req.user.id);
+  const predefinedServices = await this.getPredefinedServices(req.user.id);
+
+
+  // إنشاء الباقة
+  const venuePackage = this.venuePackageRepo.create(dto);
+  await this.venuePackageRepo.save(venuePackage);
+
+  // إنشاء `VenuePackageEquipment` لكل معدات مسترجعة
+  const venuePackageEquipments = predefinedEquipments.map(equipment => {
+    return this.venuePackageEquipmentRepo.create({
+      package: venuePackage,
+      equipment: equipment,
+      count: 0, // القيمة الافتراضية
+      price: 0, // القيمة الافتراضية
+    });
+  });
+  await this.venuePackageEquipmentRepo.save(venuePackageEquipments);
+
+  // إنشاء `VenuePackageService` لكل خدمة مسترجعة
+  const venuePackageServices = predefinedServices.map(service => {
+    return this.venuePackageServiceRepo.create({
+      package: venuePackage,
+      service: service,
+      price: 0, // القيمة الافتراضية
+    });
+  });
+  await this.venuePackageServiceRepo.save(venuePackageServices);
+
+  return venuePackage;
+
+  }
+
+
+
+  async getPredefinedEquipments(userId: number) {
+    return this.equipmentRepo.find({
+      where: [
+        {is_predefined: true} ,
+        {user_id: userId } 
+      ]
+    });
+  }
+  
+  async getPredefinedServices(userId: number) {
+    return this.serviceRepo.find({
+      where: [
+        {is_predefined: true} ,
+        {user_id: userId } 
+      ]
+    });
+  }
+  
 
 }
