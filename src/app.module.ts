@@ -12,7 +12,7 @@ import { CityModule } from './29_city/city.module';
 import { VenueModule } from './14_venue/venue.module';
 import { SharedModule } from './shared.module';
 import { CountryModule } from './28_country/country.module';
-import { MediaModule } from './media/media.module';
+import { MediaModule } from './06_media/media.module';
 import { OccasionTypeModule } from './30_occasion_type/occasion_type.module';
 import { FeatureModule } from './25_feature/feature.module';
 import { ServiceModule } from './19_service/service.module';
@@ -33,7 +33,7 @@ import { VenuePackageEquipmentModule } from './12_venue-package-equipment/venue-
 import { VenueGalleryModule } from './15_venue-gallery/venue-gallery.module';
 import { TicketModule } from './05_tickets/tickets.module'; 
 import { QueryFailedErrorFilter } from 'common/filters/QueryFailedErrorFilter';
-import { SettingsModule } from './settings/settings.module';
+import { SettingsModule } from './07_settings/settings.module';
 import { VenueFeatureModule } from './24_venue-feature/venue-feature.module';
 
 

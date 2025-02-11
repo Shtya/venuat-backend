@@ -40,13 +40,14 @@ export class VenueService extends BaseService<Venue> {
     "reservations",
     "venuePackages",
     "venueGalleries",
-    'venueFeatures', 'venueFeatures.feature', 
-    'venuePolicies', 'venuePolicies.policy', 
+    'venueFeatures', 
+    'venuePolicies', 
     'venueFAQs', 
     'venueCalendars', 
   ];
 
-
+  //'venueFeatures.feature', 
+  //'venuePolicies.policy', 
 
   async createCustom(dto: CreateVenueDto): Promise<Venue> {
     dto.occasion && (await checkFieldExists(this.occasionTypeRepository, { id: dto.occasion }, this.i18n.t("events.venue.occasion_type_not_found") , true)); //!'Occasion type does not exist'
