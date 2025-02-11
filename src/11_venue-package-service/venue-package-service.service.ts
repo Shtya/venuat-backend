@@ -40,12 +40,12 @@ export class VenuePackageServiceService extends BaseService<VenuePackageService>
   }
 
   async getPackageServices(packageId: number) {
-    return this.venuePackageServicerepo.find({ where: { package: { id: packageId } }, relations: ['package']  })  ;
+    return this.venuePackageServicerepo.find({ where: { package: { id: packageId } }, relations: ['service' , "service.iconMedia" ]  })  ;
   }
   
 
   async updateServiceInPackage(id: number, newPrice: number) {
-    const venuePackageService = await this.venuePackageServicerepo.findOne({ where: { id }, relations: ['package'] });
+    const venuePackageService = await this.venuePackageServicerepo.findOne({ where: { id }, relations: ['service' , "service.iconMedia" ] });
 
     if (!venuePackageService) {
       throw new Error('Service not found in package');

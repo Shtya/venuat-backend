@@ -65,7 +65,7 @@ export class ServiceController {
     @Permissions(EPermissions.EQUIPMENT_READ)
     async findGlobalAndUserEquipment(@Query() query, @Req() req) {
         const userId = req.user.id;  // Extract user ID from the token
-        return this.serviceRepository.find({where: [{ user_id: userId } , {is_predefined : true} ]})
+        return this.serviceRepository.find( {   where: [{ user_id: userId } , {is_predefined : true} ], relations : ["iconMedia"] , })
     }
 
   @Get(':id')
