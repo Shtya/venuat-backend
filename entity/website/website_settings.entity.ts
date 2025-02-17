@@ -1,26 +1,41 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity("website_settings")
-export class WebsiteSettings {
+@Entity('home_settings')
+export class HomeSettings {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('jsonb' , { nullable: true })
-  pages: { 
-    id: string; 
-    ar: string; 
-    en: string; 
-  }[];  // Each page will now have a unique ID
+  @Column({ type: 'jsonb' })
+  titleHome: { ar: string; en: string };
 
-  @Column('jsonb' ,{ nullable: true })
-  termsAndCondition: Record<string, string>;
+  @Column({ type: 'jsonb' })
+  secondTitleHome: { ar: string; en: string };
 
-  @Column('jsonb' ,{ nullable: true })
-  faqs: { 
+  @Column({ type: 'text', nullable: true })
+  urlVideo?: string;
+
+  @Column({ type: 'simple-array', nullable: true })
+  specialVenues?: number[]; // تخزين معرفات الأماكن المميزة كمصفوفة
+
+  @Column({ type: 'simple-array', nullable: true })
+  bestRatedVenues?: number[]; // تخزين معرفات الأماكن الأعلى تقييمًا كمصفوفة
+
+  @Column({ type: 'jsonb' })
+  termsAndCondition: { ar: string; en: string };
+
+  @Column({ type: 'jsonb', nullable: true })
+  faqs?: Array<{
     id: string;
-    question: Record<string, string>; 
-    answer: Record<string, string>; 
-  }[]; // Each FAQ will now have a unique ID
+    question: { ar: string; en: string };
+    answer: { ar: string; en: string };
+  }>;
+
+  @Column({ type: 'jsonb', nullable: true })
+  socialMedia?: Array<{
+    id: string;
+    name: string;
+    link: string;
+  }>;
 
   @CreateDateColumn()
   created_at: Date;

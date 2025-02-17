@@ -25,12 +25,27 @@ export class VenueFaqController {
   @Post()
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_FAQ_CREATE)
-  async create(@Body() dto: CreateVenueFaqDto) {
-    const venue = await this.venueRepository.findOne({ where: { id: dto.venue_id }  });
+  async create(@Body() dtos: CreateVenueFaqDto[]) {
+    if (!Array.isArray(dtos) || dtos.length === 0) {
+      throw new NotFoundException('Invalid input: Expected an array of FAQs');
+    }
 
-    if (!venue) throw new NotFoundException( this.venueFaqService.i18n.t("events.venue_not_found2", { args: { venue_id: dto.venue_id } })); 
-    const faq = this.venueFaqRepository.create({ ...dto, venue });
-    return this.venueFaqRepository.save(faq);
+    const faqsToSave = [];
+
+    for (const dto of dtos) {
+      const venue = await this.venueRepository.findOne({ where: { id: dto.venue_id } });
+
+      if (!venue) {
+        throw new NotFoundException(
+          this.venueFaqService.i18n.t('events.venue_not_found2', { args: { venue_id: dto.venue_id } }),
+        );
+      }
+
+      const faq = this.venueFaqRepository.create({ ...dto, venue });
+      faqsToSave.push(faq);
+    }
+
+    return this.venueFaqRepository.save(faqsToSave);
   }
 
   @Get()

@@ -61,7 +61,7 @@ export class BaseService<T> {
     }
   }
 
-  async FIND(entityName: string, search?: string, page: any = 1, limit: any = 10, sortBy?: string, sortOrder: 'ASC' | 'DESC' = 'DESC', fieldsExclude?: string[], relations?: string[], searchFields?: string[], specificSearchFields?: any) {
+  async FIND(entityName: string, search?: string, page: any = 1, limit: any = 10, sortBy?: string, sortOrder: 'ASC' | 'DESC' = 'DESC', fieldsExclude?: string[], relations?: string[], searchFields?: string[], specificSearchFields?: any , customRelations ?: boolean) {
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
 
@@ -179,6 +179,14 @@ export class BaseService<T> {
       relations.forEach(relation => {
         query.leftJoinAndSelect(`${entityName}.${relation}`, relation);
       });
+
+      if(customRelations){
+        query
+        .leftJoinAndSelect(`${entityName}.property`, "property")
+        .leftJoinAndSelect("property.city", "city")
+        .leftJoinAndSelect("city.country", "country");
+
+      }
     }
 
 
@@ -197,7 +205,7 @@ export class BaseService<T> {
 
 
     //! Fetch data
-    const [data, total] = await query.getManyAndCount();
+    const [data, total] = await query.getManyAndCount() as any;
 
     //! Exclude specified fields from the response
     if (fieldsExclude?.length > 0) {
@@ -211,7 +219,8 @@ export class BaseService<T> {
       });
     }
 
-    return { limit: limitNumber, countRecored: total, page: pageNumber, data };
+
+    return { limit: limitNumber, countRecored: total, page: pageNumber, data  };
   }
 
   async findAll(

@@ -10,6 +10,7 @@ import { VenueGallery } from './venue_gallery.entity';
 import { VenueFAQ } from './venue_faq.entity';
 import { Reservation } from '../reservation/reservation.entity';
 import { VenueCalendar } from './venue_calendar.entity';
+import { VenueRating } from './venue_ratings.entity';
 
 @Entity()
 export class Venue {
@@ -81,6 +82,9 @@ export class Venue {
   @CreateDateColumn()
   created_at: Date;
 
+  @Column({ type: "int", default: 0 }) // Initialize with 0
+  visitCount: number;
+
   
   @UpdateDateColumn()
   updated_at: Date;
@@ -89,9 +93,11 @@ export class Venue {
   profile_image_id: number
 
   @ManyToOne(() => OccasionType, occasionType => occasionType.venues)
+  @JoinColumn({ name: "occasion_id" })
   occasion: OccasionType;
 
   @ManyToOne(() => Property, property => property.venue)
+  @JoinColumn({ name: "property_id" }) 
   property: Property;
 
   
@@ -108,6 +114,9 @@ export class Venue {
 
   @OneToMany(() => VenuePolicy, venuePolicy => venuePolicy.venue)
   venuePolicies: VenuePolicy[];
+
+  @OneToMany(() => VenueRating, rating => rating.venue)
+  ratings: VenueRating[];
   
   @OneToMany(() => VenueFAQ, venueFAQ => venueFAQ.venue)
   venueFAQs: VenueFAQ[];

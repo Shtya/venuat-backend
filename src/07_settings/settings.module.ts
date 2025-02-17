@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common'; 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WebsiteSettings } from 'entity/website/website_settings.entity';
-import { WebsiteSettingsController } from './settings.controller';
-import { WebsiteSettingsService } from './settings.service';
+import { HomeSettings } from 'entity/website/website_settings.entity';
+import { HomeSettingsController } from './settings.controller';
+import { HomeSettingsService } from './settings.service';
 
 
 @Module({
-  imports : [TypeOrmModule.forFeature([WebsiteSettings])] ,
-  controllers: [WebsiteSettingsController],
-  providers: [WebsiteSettingsService],
+  imports : [TypeOrmModule.forFeature([HomeSettings])] ,
+  controllers: [HomeSettingsController],
+  providers: [HomeSettingsService],
 })
 export class SettingsModule {}
 

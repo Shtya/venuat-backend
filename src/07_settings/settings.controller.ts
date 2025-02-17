@@ -1,53 +1,43 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, NotFoundException, HttpCode, HttpStatus, Query } from '@nestjs/common';
-import { CreateWebsiteSettingsDto, UpdateWebsiteSettingsDto } from 'dto/website/websiteSetting.dto';
-import { WebsiteSettings } from 'entity/website/website_settings.entity';
-import { WebsiteSettingsService } from './settings.service';
+import { Controller, Get, Put, Post, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { UpdateHomeSettingsDto, CreateFaqDto, UpdateFaqDto, CreateSocialMediaDto, UpdateSocialMediaDto, CreateHomeSettingsDto } from 'dto/website/websiteSetting.dto';
+import { HomeSettingsService } from './settings.service';
+import { AuthGuard } from 'src/01_auth/auth.guard';
+import { Permissions } from 'src/01_auth/permissions.decorators';
+import { EPermissions } from 'enums/Permissions.enum';
 
-@Controller('website-settings')
-export class WebsiteSettingsController {
-  constructor(private readonly websiteSettingsService: WebsiteSettingsService) {}
+@Controller('settings')
+export class HomeSettingsController {
+  constructor(private readonly homeSettingsService: HomeSettingsService) {}
 
-  @Post()
-  async create(@Body() createWebsiteSettingsDto: CreateWebsiteSettingsDto): Promise<WebsiteSettings> {
-    return await this.websiteSettingsService.createCustom(createWebsiteSettingsDto);
-  }
 
   @Get()
-  async findAll(@Query() query  ) {
-    const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
-    
-    return this.websiteSettingsService.FIND(
-      'websiteSettings',
-      search ,
-      page,
-      limit,
-      sortBy,
-      sortOrder,
-      [],                // exclude some fields
-      [],                // Relations 
-      [],         // search parameters
-      restQueryParams    // search with fields
-    );
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.WEBSITE_SETTINGS_READ)
+  getSettings() {
+    return this.homeSettingsService.getSettings();
+  }
+
+  @Put()
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.WEBSITE_SETTINGS_UPDATE)
+  updateSettings(@Body() dto: UpdateHomeSettingsDto) {
+    return this.homeSettingsService.createOrUpdate(dto);
+  }
+
+  @Post('faq')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.WEBSITE_SETTINGS_CREATE)
+  addFaq(@Body() dto: CreateFaqDto) {
+    return this.homeSettingsService.addFaq(dto);
+  }
+
+  @Delete('faq/:id')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.WEBSITE_SETTINGS_DELETE)
+  removeFaq(@Param('id') id: string) {
+    return this.homeSettingsService.removeFaq(id);
   }
 
 
-  @Get(':id')
-  async findOne(@Param('id') id: number)  {
-    return this.websiteSettingsService.findOne(+id);
-  }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() updateWebsiteSettingsDto: UpdateWebsiteSettingsDto): Promise<WebsiteSettings> {
-    const websiteSettings = await this.websiteSettingsService.findOne(id);
-    if (!websiteSettings) {
-      throw new NotFoundException(this.websiteSettingsService.i18n.t('events.website_settings_not_found', { args: { id } }));
-    }
-    return await this.websiteSettingsService.updateCustom(id, updateWebsiteSettingsDto);
-  }
-
-
-  @Delete(':id')
-  async remove(@Param('id') id: number) {
-     return this.websiteSettingsService.remove(+id);
-  }
 }

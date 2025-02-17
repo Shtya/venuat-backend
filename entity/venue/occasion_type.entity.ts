@@ -12,9 +12,9 @@ export class OccasionType {
   @OneToMany(() => Venue, venue => venue.occasion)
   venues: Venue[];
 
-  // @CreateDateColumn()
-  // created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-  // @UpdateDateColumn()
-  // updated_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 }

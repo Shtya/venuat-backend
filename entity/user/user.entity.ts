@@ -6,6 +6,7 @@ import { Ticket } from './ticket.entity';
 import { OTP } from './otp.entity';
 import { FCM } from './fcm.entity';
 import { Role } from 'entity/permission/role.entity';
+import { VenueRating } from 'entity/venue/venue_ratings.entity';
 
 @Entity()
 export class User {
@@ -27,13 +28,13 @@ export class User {
   @Column({ default: 'active' })
   status: string;
 
-  @Column({default: null})
+  @Column({ default: null })
   avatar: string;
 
-  @Column({default: null})
+  @Column({ default: null })
   otpToken: string;
 
-  @Column({default: null})
+  @Column({ default: null })
   otpExpire: Date;
 
   @CreateDateColumn()
@@ -42,25 +43,27 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  
   @OneToMany(() => Property, property => property.vendor)
   properties: Property[];
-  
+
   @OneToMany(() => Reservation, reservation => reservation.user)
   reservations: Reservation[];
-  
+
   @OneToMany(() => Ticket, ticket => ticket.user)
   tickets: Ticket[];
-  
+
+  @OneToMany(() => VenueRating, rating => rating.venue)
+  ratings: VenueRating[];
+
   @OneToMany(() => OTP, otp => otp.user)
   otps: OTP[];
-  
+
   @OneToMany(() => FCM, fcm => fcm.user)
   fcms: FCM[];
 
-  @ManyToOne(()=> Role , role => role.id)
-  role : Role ;
-  
+  @ManyToOne(() => Role, role => role.id)
+  role: Role;
+
   @OneToMany(() => UserNotification, notification => notification.user)
   notifications: UserNotification[];
 }

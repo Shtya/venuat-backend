@@ -37,7 +37,7 @@ export class VenueController {
   @Permissions(EPermissions.VENUES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
-    return this.venueService.FIND(
+    return   this.venueService.FIND(
       'venue',
       search ,
       page,
@@ -47,15 +47,91 @@ export class VenueController {
       [],                // exclude some fields
       this.venueService.relations,                // Relations 
       ["name" , "description" , "operating_system" ,"phone" ,"email" ,"contact_person" ],         // search parameters
-      restQueryParams    // search with fields
+      restQueryParams,    // search with fields
+      true
     )
   }
+
+
+  @Get("find-all")
+@UseGuards(AuthGuard)
+@Permissions(EPermissions.VENUES_READ)
+async findAll2(@Query() query) {
+  const {
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+    visitor,
+    city,
+    occasion,
+    startOccasion,
+    mostVisited,
+    highestRated,
+    newest,
+    minPrice, // New: Minimum price
+    maxPrice, // New: Maximum price
+    ...restQueryParams
+  } = query;
+
+  let occasionIds: number | number[] | undefined;
+
+  if (occasion) {
+    if (Array.isArray(occasion)) {
+      // If occasion is an array, convert each item to a number
+      occasionIds = occasion.map(id => Number(id));
+    } else {
+      // If occasion is a single value, convert it to a number
+      occasionIds = Number(occasion);
+    }
+  }
+
+  return this.venueService.customFind(
+    'venue',
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+    undefined, // fieldsExclude
+    visitor ? Number(visitor) : undefined,
+    city ? Number(city) : undefined,
+    occasionIds ,
+    startOccasion,
+    mostVisited === 'true',
+    highestRated === 'true',
+    newest === 'true',
+    minPrice ? Number(minPrice) : undefined, 
+    maxPrice ? Number(maxPrice) : undefined 
+  );
+}
+
+
+  // @Get("find-all")
+  // @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.VENUES_READ)
+  // async findAll2(@Query() query) {
+  //   const { page, limit, search, sortBy, sortOrder, visitor, city, occasion, startOccasion, ...restQueryParams } = query;
+  //   return this.venueService.customFind(
+  //     'venue',
+  //     page,
+  //     limit,
+  //     sortBy,
+  //     sortOrder,
+  //     undefined, // fieldsExclude
+  //     visitor ? Number(visitor) : undefined,
+  //     city ? Number(city) : undefined,
+  //     occasion ? Number(occasion) : undefined,
+  //     startOccasion
+  //   );
+  // }
+
 
   @Get(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUES_READ)
   async findOne(@Param('id') id: number) {
-    return this.venueService.findOne(id , this.venueService.relations);
+    return  this.venueService.customFindOne(id)
   }
 
   @Put(':id')

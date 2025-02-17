@@ -1,61 +1,123 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateWebsiteSettingsDto, UpdateWebsiteSettingsDto } from 'dto/website/websiteSetting.dto';
-import { WebsiteSettings } from 'entity/website/website_settings.entity';
+import { In, Repository } from 'typeorm';
+import { UpdateHomeSettingsDto, CreateFaqDto, UpdateFaqDto, CreateSocialMediaDto, UpdateSocialMediaDto, CreateHomeSettingsDto } from 'dto/website/websiteSetting.dto';
+import { HomeSettings } from 'entity/website/website_settings.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { BaseService } from 'common/base/base.service';
+import { Venue } from 'entity/venue/venue.entity';
 
 @Injectable()
-export class WebsiteSettingsService extends BaseService<WebsiteSettings> {
+export class HomeSettingsService {
   constructor(
-    @InjectRepository(WebsiteSettings)
-    private readonly websiteSettingsRepository: Repository<WebsiteSettings>
-  ) {
-    super(websiteSettingsRepository);
-  }
+    @InjectRepository(HomeSettings) private readonly homeSettingsRepo: Repository<HomeSettings>,
+    @InjectRepository(Venue) private readonly venueRepo: Repository<Venue>
+  ) {}
 
-  async createCustom(createWebsiteSettingsDto: CreateWebsiteSettingsDto): Promise<WebsiteSettings> {
-    const pagesWithIds = createWebsiteSettingsDto.pages.map(page => ({
-      ...page,
-      id: uuidv4(),
-    }));
+  async getSettings() {
+    let settings = await this.homeSettingsRepo.findOne({ where: { id: 1 } });
 
-    const faqsWithIds = createWebsiteSettingsDto.faqs.map(faq => ({
-      ...faq,
-      id: uuidv4(),
-    }));
+    if (!settings) {
+      settings = this.homeSettingsRepo.create({
+        id: 1, // تأكيد أن المعرف دائمًا 1
+        titleHome: { ar: null, en: null },
+        secondTitleHome: { ar: null, en: null },
+        urlVideo: null,
+        specialVenues: [],
+        bestRatedVenues: [],
+        faqs: [],
+        termsAndCondition: { ar: null, en: null },
+        socialMedia: [],
+      });
 
-    const newWebsiteSettings = this.websiteSettingsRepository.create({
-      ...createWebsiteSettingsDto,
-      pages: pagesWithIds,
-      faqs: faqsWithIds,
-    });
-
-    return await this.websiteSettingsRepository.save(newWebsiteSettings);
-  }
-
-  async updateCustom(id: number, updateWebsiteSettingsDto: UpdateWebsiteSettingsDto): Promise<WebsiteSettings> {
-    const websiteSettings = await this.websiteSettingsRepository.findOne({ where: { id } });
-    if (!websiteSettings) {
-      throw new NotFoundException(this.i18n.t('events.website_settings_not_found', { args: { id } }));
+      settings = await this.homeSettingsRepo.save(settings);
     }
 
-    if (updateWebsiteSettingsDto.pages) {
-      updateWebsiteSettingsDto.pages = updateWebsiteSettingsDto.pages.map(page => ({
-        ...page,
-        id: page.id || uuidv4(),
-      }));
+    const specialVenues = settings.specialVenues?.length ? await this.venueRepo.find({ where: { id: In(settings.specialVenues) }, relations: [ "ratings" , "occasion" , "venueGalleries" , "property", "property.city", "property.city.country"]}): [];
+
+    const bestRatedVenues = settings.bestRatedVenues?.length ? await this.venueRepo.find({ where: { id: In(settings.bestRatedVenues) }, relations: [ "ratings" , "occasion" , "venueGalleries" , "property", "property.city", "property.city.country"]}): [];
+
+    return {
+        settings,
+        specialVenues,
+        bestRatedVenues,
+    };
+  }
+
+  async createOrUpdate(dto: CreateHomeSettingsDto) {
+    let settings = await this.homeSettingsRepo.findOne({ where: { id: 1 } });
+
+    // إذا لم يكن موجودًا، نقوم بإنشائه مع قيم `null`
+    if (!settings) {
+      settings = this.homeSettingsRepo.create({
+        id: 1,
+        titleHome: { ar: null, en: null },
+        secondTitleHome: { ar: null, en: null },
+        urlVideo: null,
+        specialVenues: [],
+        bestRatedVenues: [],
+        faqs: [],
+        termsAndCondition: { ar: null, en: null },
+        socialMedia: [],
+      });
+      settings = await this.homeSettingsRepo.save(settings);
     }
 
-    if (updateWebsiteSettingsDto.faqs) {
-      updateWebsiteSettingsDto.faqs = updateWebsiteSettingsDto.faqs.map(faq => ({
-        ...faq,
+    if (dto.faqs) {
+      dto.faqs = dto.faqs.map(faq => ({
         id: faq.id || uuidv4(),
+        ...faq,
       }));
     }
 
-    const updatedWebsiteSettings = Object.assign(websiteSettings, updateWebsiteSettingsDto);
-    return await this.websiteSettingsRepository.save(updatedWebsiteSettings);
+    if (dto.specialVenues?.length) {
+      const foundVenues = await this.venueRepo.findBy({ id: In(dto.specialVenues) });
+      const foundVenueIds = new Set(foundVenues.map(venue => venue.id));
+      const invalidSpecialVenues = dto.specialVenues.filter(id => !foundVenueIds.has(id));
+
+      if (invalidSpecialVenues.length > 0) {
+        throw new BadRequestException(`Invalid special venue IDs: ${invalidSpecialVenues.join(', ')}`);
+      }
+
+      dto.specialVenues = Array.from(foundVenueIds);
+    }
+
+    if (dto.bestRatedVenues?.length) {
+      const foundVenues = await this.venueRepo.findBy({ id: In(dto.bestRatedVenues) });
+      const foundVenueIds = new Set(foundVenues.map(venue => venue.id));
+      const invalidBestRatedVenues = dto.bestRatedVenues.filter(id => !foundVenueIds.has(id));
+
+      if (invalidBestRatedVenues.length > 0) {
+        throw new BadRequestException(`Invalid best-rated venue IDs: ${invalidBestRatedVenues.join(', ')}`);
+      }
+
+      dto.bestRatedVenues = Array.from(foundVenueIds);
+    }
+
+    Object.assign(settings, dto); // تحديث القيم في السجل الموجود
+    return this.homeSettingsRepo.save(settings);
+  }
+
+  async addFaq(dto: CreateFaqDto) {
+    const {settings} = await this.getSettings();
+
+    const newFaq = {
+      id: uuidv4(), // إنشاء ID فريد
+      ...dto,
+    };
+
+    settings.faqs.push(newFaq);
+    return this.homeSettingsRepo.save(settings);
+  }
+
+  async removeFaq(id: string): Promise<HomeSettings> {
+    const {settings} = await this.getSettings();
+
+    const faqIndex = settings.faqs.findIndex(faq => faq.id === id);
+    if (faqIndex === -1) {
+      throw new NotFoundException('FAQ not found');
+    }
+
+    settings.faqs.splice(faqIndex, 1);
+    return this.homeSettingsRepo.save(settings);
   }
 }

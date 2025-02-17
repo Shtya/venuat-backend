@@ -35,6 +35,8 @@ import { TicketModule } from './05_tickets/tickets.module';
 import { QueryFailedErrorFilter } from 'common/filters/QueryFailedErrorFilter';
 import { SettingsModule } from './07_settings/settings.module';
 import { VenueFeatureModule } from './24_venue-feature/venue-feature.module';
+import { VenueRatingModule } from './venue_ratings/venue_ratings.module';
+
 
 
 @Module({
@@ -95,6 +97,7 @@ import { VenueFeatureModule } from './24_venue-feature/venue-feature.module';
     TicketModule,
     SettingsModule,
     VenueFeatureModule,
+    VenueRatingModule,
   ],
   controllers: [ApiController],
   providers: [ LoggingValidationPipe , QueryFailedErrorFilter ],

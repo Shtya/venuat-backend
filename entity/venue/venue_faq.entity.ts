@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Venue } from './venue.entity';
 
 @Entity()
@@ -7,6 +7,7 @@ export class VenueFAQ {
   id: number;
 
   @ManyToOne(() => Venue, venue => venue.venueFAQs)
+  @JoinColumn({name : "venue_id"})
   venue: Venue;
 
   @Column('jsonb')
