@@ -24,6 +24,12 @@ export class VenuePackage {
   @Column('decimal', { default : 0 ,  nullable: true })
   package_price: number;
 
+  @Column({ type: 'timestamp', nullable: false })
+  start_date: Date;
+
+  @Column({ type: 'timestamp', nullable: false })
+  end_date: Date;
+
   @OneToMany(() => VenuePackageService, (vps) => vps.package)
   services: VenuePackageService[];
 

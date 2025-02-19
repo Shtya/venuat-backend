@@ -61,7 +61,7 @@ export class BaseService<T> {
     }
   }
 
-  async FIND(entityName: string, search?: string, page: any = 1, limit: any = 10, sortBy?: string, sortOrder: 'ASC' | 'DESC' = 'DESC', fieldsExclude?: string[], relations?: string[], searchFields?: string[], specificSearchFields?: any , customRelations ?: boolean) {
+  async FIND(entityName: string, search?: string, page: any = 1, limit: any = 10, sortBy?: string, sortOrder: 'ASC' | 'DESC' = 'DESC', fieldsExclude?: string[], relations?: string[], searchFields?: string[], specificSearchFields?: any , customRelations ?: boolean ,status ?: string ) {
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
 
@@ -136,6 +136,9 @@ export class BaseService<T> {
                 }
               }
             });
+
+            qb.andWhere(`${entityName}.status = :status`, { status: 'answered' });
+
           })
         );
       }
@@ -180,13 +183,6 @@ export class BaseService<T> {
         query.leftJoinAndSelect(`${entityName}.${relation}`, relation);
       });
 
-      if(customRelations){
-        query
-        .leftJoinAndSelect(`${entityName}.property`, "property")
-        .leftJoinAndSelect("property.city", "city")
-        .leftJoinAndSelect("city.country", "country");
-
-      }
     }
 
 

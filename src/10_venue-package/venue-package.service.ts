@@ -30,45 +30,44 @@ export class VenuePackageService extends BaseService<VenuePackage> {
 
 
 
-  async customCreate (dto : CreateVenuePackageDto , req){
+  async customCreate(dto: CreateVenuePackageDto, req) {
     await checkFieldExists(this.venueRepo, { id: dto.venue_id }, "venue doesn't exist.", true, 404);
-  const venue = await this.venueRepo.findOne({ where: { id: dto.venue_id } });
+    const venue = await this.venueRepo.findOne({ where: { id: dto.venue_id } });
 
-  dto.package_price = venue?.price || 0;
+    dto.package_price = venue?.price || 0;
 
-  // جلب المعدات والخدمات المتاحة للمستخدم والتي هي محددة مسبقًا
-  const predefinedEquipments = await this.getPredefinedEquipments(req.user.id);
-  const predefinedServices = await this.getPredefinedServices(req.user.id);
+    // التحقق من أن تاريخ البداية قبل تاريخ النهاية
+    if (new Date(dto.start_date) >= new Date(dto.end_date)) {
+        throw new Error("Start date must be before end date.");
+    }
 
+    // جلب المعدات والخدمات المتاحة للمستخدم
+    const predefinedEquipments = await this.getPredefinedEquipments(req.user.id);
+    const predefinedServices = await this.getPredefinedServices(req.user.id);
 
-  // إنشاء الباقة
-  const venuePackage = this.venuePackageRepo.create(dto);
-  await this.venuePackageRepo.save(venuePackage);
+    // إنشاء الباقة
+    const venuePackage = this.venuePackageRepo.create(dto);
+    await this.venuePackageRepo.save(venuePackage);
 
-  // إنشاء `VenuePackageEquipment` لكل معدات مسترجعة
-  const venuePackageEquipments = predefinedEquipments.map(equipment => {
-    return this.venuePackageEquipmentRepo.create({
-      package: venuePackage,
-      equipment: equipment,
-      count: 0, // القيمة الافتراضية
-      price: 0, // القيمة الافتراضية
-    });
-  });
-  await this.venuePackageEquipmentRepo.save(venuePackageEquipments);
+    // إنشاء `VenuePackageEquipment` لكل معدات مسترجعة
+    const venuePackageEquipments = predefinedEquipments.map(equipment => ({
+        package: venuePackage,
+        equipment: equipment,
+        count: 0,
+        price: 0,
+    }));
+    await this.venuePackageEquipmentRepo.save(venuePackageEquipments);
 
-  // إنشاء `VenuePackageService` لكل خدمة مسترجعة
-  const venuePackageServices = predefinedServices.map(service => {
-    return this.venuePackageServiceRepo.create({
-      package: venuePackage,
-      service: service,
-      price: 0, // القيمة الافتراضية
-    });
-  });
-  await this.venuePackageServiceRepo.save(venuePackageServices);
+    // إنشاء `VenuePackageService` لكل خدمة مسترجعة
+    const venuePackageServices = predefinedServices.map(service => ({
+        package: venuePackage,
+        service: service,
+        price: 0,
+    }));
+    await this.venuePackageServiceRepo.save(venuePackageServices);
 
-  return venuePackage;
-
-  }
+    return venuePackage;
+}
 
 
 

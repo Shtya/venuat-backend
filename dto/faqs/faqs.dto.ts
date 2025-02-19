@@ -9,9 +9,9 @@ export class CreateVenueFaqDto {
   @IsNotEmpty({ message: "events.questionRequired" }) // السؤال مطلوب
   question: Record<string, any>;
 
+  @IsOptional()
   @IsObject({ message: "events.answerMustBeObject" }) // يجب أن تكون الإجابة كائن JSON
-  @IsNotEmpty({ message: "events.answerRequired" }) // الإجابة مطلوبة
-  answer: Record<string, any>;
+  answer: any;
 }
 
 export class UpdateVenueFaqDto {
@@ -23,3 +23,12 @@ export class UpdateVenueFaqDto {
   @IsOptional()
   answer?: Record<string, any>;
 }
+
+
+
+export class AnswerVenueFaqDto {
+  @IsNotEmpty()
+  @IsObject()
+  answer: any;
+}
+

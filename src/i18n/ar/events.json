@@ -5,6 +5,12 @@
   "website_settings_not_found": "إعدادات الموقع بالمعرف {id} غير موجودة.",
   "service_not_exist": "الخدمة غير موجودة.",
 
+
+  "startDateRequired": "تاريخ البداية مطلوب.",
+  "startDateMustBeDate": "يجب أن يكون تاريخ البداية تاريخًا صالحًا.",
+  "endDateRequired": "تاريخ النهاية مطلوب.",
+  "endDateMustBeDate": "يجب أن يكون تاريخ النهاية تاريخًا صالحًا.",
+
   "pages_setting_empty": "يجب إدخال إعدادات الصفحات.",
   "pages_setting_invalid_array": "إعدادات الصفحات يجب أن تكون مصفوفة.",
   "pages_setting_invalid_object": "كل عنصر في إعدادات الصفحات يجب أن يكون كائنًا صحيحًا.",

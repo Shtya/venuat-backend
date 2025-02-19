@@ -6,15 +6,18 @@ export class VenueFAQ {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Venue, venue => venue.venueFAQs)
-  @JoinColumn({name : "venue_id"})
+  @ManyToOne(() => Venue, (venue) => venue.venueFAQs)
+  @JoinColumn({ name: 'venue_id' })
   venue: Venue;
 
   @Column('jsonb')
   question: any;
 
-  @Column('jsonb')
+  @Column('jsonb', { nullable: true })
   answer: any;
+
+  @Column({ type: 'enum', enum: ['pending', 'answered'], default: 'answered' })  // ✅ حقل جديد لتحديد حالة السؤال
+  status: 'pending' | 'answered';
 
   @CreateDateColumn()
   created_at: Date;

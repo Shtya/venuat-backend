@@ -5,6 +5,11 @@
   "website_settings_not_found": "Website settings with ID {id} not found.",
   "service_not_exist": "The service does not exist.",
 
+  "startDateRequired": "Start date is required.",
+  "startDateMustBeDate": "Start date must be a valid date.",
+  "endDateRequired": "End date is required.",
+  "endDateMustBeDate": "End date must be a valid date.",
+
   "pages_setting_empty": "Page settings must be entered.",
   "pages_setting_invalid_array": "Page settings must be an array.",
   "pages_setting_invalid_object": "Each item in page settings must be a valid object.",

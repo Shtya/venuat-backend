@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, Query, NotFoundException, UseGuards } from '@nestjs/common';
 import { VenueFAQ } from 'entity/venue/venue_faq.entity';
 import { VenueFaqService } from './faqs.service';
-import { CreateVenueFaqDto, UpdateVenueFaqDto } from 'dto/faqs/faqs.dto';
+import { AnswerVenueFaqDto, CreateVenueFaqDto, UpdateVenueFaqDto } from 'dto/faqs/faqs.dto';
 import { Venue } from 'entity/venue/venue.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -21,6 +21,62 @@ export class VenueFaqController {
   ) {}
 
 
+
+  @Post('/question')
+  async createQuestion(@Body() dto: CreateVenueFaqDto) {
+    const venue = await this.venueRepository.findOne({ where: { id: dto.venue_id } });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${dto.venue_id} not found`);
+    }
+
+    const faq = this.venueFaqRepository.create({ ...dto, venue, status: 'pending' });
+
+    return this.venueFaqRepository.save(faq);
+  }
+
+
+  @Get('/pending/:venue_id')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_FAQ_READ)
+  async getPendingQuestions(@Param('venue_id') venue_id: number) {
+    return this.venueFaqRepository.find({ 
+      where: { status: 'pending', venue: { id: venue_id } } 
+    });
+  }
+  
+
+
+  // * ✅ البائع يقوم بالإجابة على السؤال وتغيير حالته إلى "answered"
+  @Put('/:id/answer')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_FAQ_UPDATE)
+  async answerQuestion(@Param('id') id: number, @Body() dto) {
+    const faq = await this.venueFaqRepository.findOne({ where: { id } });
+
+    if (!faq) {
+      throw new NotFoundException('FAQ not found');
+    }
+
+    // تحديث الجواب وتغيير الحالة إلى "answered"
+    faq.answer = dto.answer;
+    faq.question = dto.question;
+    faq.status = 'answered';
+
+    return this.venueFaqRepository.save(faq);
+  }
+
+
+  // * ✅ استرجاع جميع الأسئلة التي تمت الإجابة عليها فقط
+  @Get('/answered')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_FAQ_READ)
+  async findAnswered() {
+    return this.venueFaqRepository.find({
+      where: { status: 'answered' },
+      order: { updated_at: 'DESC' }, // ترتيب الأجوبة من الأحدث إلى الأقدم
+    });
+  }
 
   @Post()
   @UseGuards(AuthGuard)
@@ -63,8 +119,8 @@ export class VenueFaqController {
       sortOrder,
       [], // exclude some fields
       [], // Relations
-      ['question', 'answer'], // search parameters
-      restQueryParams // search with fields
+      ['question', 'answer' , "status" ], // search parameters
+      {...restQueryParams , status :"answered"}
     );
   }
 

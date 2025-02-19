@@ -34,14 +34,32 @@ export class VenueService extends BaseService<Venue> {
     'ratings',
     // 'venueServices',
     // 'venueEquipments',
-    'reservations',
+    // 'reservations',
     // "venuePackages",
     'venueGalleries',
     // 'venueFeatures',
     // 'venuePolicies',
+    // 'venueFAQs',
+    // 'venueCalendars',
+  ];
+  public relationsOne: string[] = [
+    'occasion',
+    'ratings',
+    // 'venueServices',
+    // 'venueEquipments',
+    // 'reservations',
+    "venuePackages",
+    "venuePackages.services.service",
+    "venuePackages.equipments.equipment",
+    'venueGalleries',
+    // 'venueFeatures',
+    // 'venuePolicies.policy',
     'venueFAQs',
     // 'venueCalendars',
   ];
+
+  
+
 
   //'venueFeatures.feature',
   //'venuePolicies.policy',
@@ -164,79 +182,9 @@ export class VenueService extends BaseService<Venue> {
 
   }
 
-  // async customFind(entityName: string, page: any = 1, limit: any = 10, sortBy?: string, sortOrder: 'ASC' | 'DESC' = 'DESC', fieldsExclude?: string[], visitor?: number, city?: number, occasion?: number, startOccasion?: string) {
-  //   // Existing logic for pagination, sorting, filtering, etc.
-  //   const pageNumber = Number(page) || 1;
-  //   const limitNumber = Number(limit) || 10;
-
-  //   if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
-  //     throw new BadRequestException(this.i18n.t('events.invalid_pagination'));
-  //   }
-
-  //   if (!['ASC', 'DESC'].includes(sortOrder)) {
-  //     throw new BadRequestException(this.i18n.t('events.invalid_sort_order'));
-  //   }
-
-  //   const skip = (pageNumber - 1) * limitNumber;
-  //   const query = this.repository.createQueryBuilder(entityName).skip(skip).take(limitNumber);
-
-  //   this.relations.forEach(relation => {
-  //     query.leftJoinAndSelect(`${entityName}.${relation}`, relation);
-  //   });
-
-  //     query
-  //     .leftJoinAndSelect(`${entityName}.property`, "property")
-  //     .leftJoinAndSelect("property.city", "city")
-  //     .leftJoinAndSelect("city.country", "country");
-
-  //   // Add filters based on query parameters
-  //   if (visitor       !== undefined)  query.andWhere('venue.max_capacity >= :visitor', { visitor });
-  //   if (city          !== undefined)  query.andWhere('property.city.id = :city', { city });
-  //   if (occasion      !== undefined)  query.andWhere('occasion.id = :occasion', { occasion });
-  //   if (startOccasion !== undefined) {
-  //     query.leftJoin(
-  //       'reservation',
-  //       'reservation',
-  //       'reservation.venue_id = venue.id AND reservation.check_in = :startOccasion',
-  //       { startOccasion }
-  //     )
-  //     .andWhere('reservation.id IS NULL');
-  //   }
-
-  //   // Fetch data
-  //   const [data, total] = (await query.getManyAndCount()) as any;
-
-  //   // Exclude specified fields from the response
-  //   if (fieldsExclude?.length > 0) {
-  //     const invalidExcludeFields = fieldsExclude.filter(field => !this.repository.metadata.columns.some(col => col.propertyName === field));
-  //     if (invalidExcludeFields.length > 0) {
-  //       throw new BadRequestException(this.i18n.t('events.invalid_exclude_fields', { args: { fields: invalidExcludeFields.join(', ') } }));
-  //     }
-
-  //     data.forEach(item => {
-  //       fieldsExclude.forEach(field => delete item[field]);
-  //     });
-  //   }
-
-  //   // Calculate average rating for venues
-  //   if (entityName === 'venue') {
-  //     const venuesWithAverageRating = data.map(venue => {
-  //       const totalRating = venue.ratings?.reduce((sum, e) => sum + +e.rating, 0) || 0;
-  //       const averageRating = venue.ratings?.length > 0 ? totalRating / venue.ratings.length : 0;
-  //       return {
-  //         ...venue,
-  //         averageRating: Number(averageRating).toFixed(1),
-  //       };
-  //     });
-
-  //     return { limit: limitNumber, countRecored: total, page: pageNumber, data: venuesWithAverageRating };
-  //   }
-
-  //   return { limit: limitNumber, countRecored: total, page: pageNumber, data };
-  // }
 
   async customFindOne(id) {
-    const venue = await this.venueRepository.findOne({ where: { id }, relations: this.relations });
+    const venue = await this.venueRepository.findOne({ where: { id }, relations: this.relationsOne });
 
     if (!venue) {
       throw new NotFoundException(this.i18n.t('events.record_not_found', { args: { id } }));
