@@ -107,25 +107,6 @@ async findAll2(@Query() query) {
 }
 
 
-  // @Get("find-all")
-  // @UseGuards(AuthGuard)
-  // @Permissions(EPermissions.VENUES_READ)
-  // async findAll2(@Query() query) {
-  //   const { page, limit, search, sortBy, sortOrder, visitor, city, occasion, startOccasion, ...restQueryParams } = query;
-  //   return this.venueService.customFind(
-  //     'venue',
-  //     page,
-  //     limit,
-  //     sortBy,
-  //     sortOrder,
-  //     undefined, // fieldsExclude
-  //     visitor ? Number(visitor) : undefined,
-  //     city ? Number(city) : undefined,
-  //     occasion ? Number(occasion) : undefined,
-  //     startOccasion
-  //   );
-  // }
-
 
   @Get(':id')
   @UseGuards(AuthGuard)

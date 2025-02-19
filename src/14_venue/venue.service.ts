@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreateVenueDto, UpdateVenueDto } from 'dto/venue/venue.dto';
 import { Venue } from 'entity/venue/venue.entity';
 import { OccasionType } from 'entity/venue/occasion_type.entity';
@@ -48,9 +48,9 @@ export class VenueService extends BaseService<Venue> {
     // 'venueServices',
     // 'venueEquipments',
     // 'reservations',
-    "venuePackages",
-    "venuePackages.services.service",
-    "venuePackages.equipments.equipment",
+    // "venuePackages",
+    // "venuePackages.services.service",
+    // "venuePackages.equipments.equipment",
     'venueGalleries',
     // 'venueFeatures',
     // 'venuePolicies.policy',
@@ -196,6 +196,13 @@ export class VenueService extends BaseService<Venue> {
     const totalRating = venue.ratings.reduce((sum, e) => sum + +e.rating, 0);
     const averageRating = totalRating / venue.ratings.length;
 
-    return { averageRating: Number(averageRating).toFixed(1), venue };
+    // ✅ جلب القاعات المشابهة بناءً على نفس `occasion_id`
+  const similarVenues = await this.venueRepository.find({
+    where: { occasion:{id : venue.occasion.id}, id: Not(id) }, // استثناء القاعة الحالية
+    take: 3, 
+    order: { visitCount: 'DESC' },
+  });
+
+    return { averageRating: Number(averageRating).toFixed(1), venue , similarVenues };
   }
 }

@@ -46,6 +46,20 @@ export class VenuePackageController {
   }
 
 
+  @Get('/:venue_id')
+  async getVenuePackages(@Param('venue_id') venue_id: number) {
+    return this.venuePackageService.getForVenue(venue_id)
+  }
+
+
+  @Get()
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_PACKAGE_READ)
+  async findForVenue() {
+   
+  }
+
+
   @Get(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_READ)

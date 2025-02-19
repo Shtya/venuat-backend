@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VenuePackage } from 'entity/venue/venue_package.entity';
@@ -68,6 +68,22 @@ export class VenuePackageService extends BaseService<VenuePackage> {
 
     return venuePackage;
 }
+
+
+
+  async getForVenue(venue_id){
+    const venuePackages = await this.venuePackageRepo.find({
+          where: { venue_id },
+          relations: ['services.service' , 'services.service.iconMedia', 'equipments.equipment' ,  'equipments.equipment.iconMedia'], // تضمين العلاقات
+          order: { created_at: 'DESC' }, // ترتيب الباقات من الأحدث إلى الأقدم
+        });
+    
+        if (!venuePackages.length) {
+          throw new NotFoundException(`No packages found for venue ID ${venue_id}`);
+        }
+    
+        return venuePackages;
+  }
 
 
 
