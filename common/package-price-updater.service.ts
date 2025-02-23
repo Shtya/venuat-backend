@@ -28,7 +28,7 @@ export class PackagePriceUpdate {
     const equipments = await this.venuePackageEquipmentRepo.find({ where: { package: { id: packageId } } });
     
     
-    const totalServicePrice = services.reduce((sum, service) => sum + Number(service.price), 0);
+    const totalServicePrice = services.reduce((sum, service) => sum + Number(service.price) * service.count, 0);
     const totalEquipmentPrice = equipments.reduce((sum, equipment) => sum + (Number(equipment.price) * equipment.count), 0);
     
     

@@ -27,8 +27,6 @@ export class VenuePolicyController {
 
   // Get all policies for a venue
   @Get(':id/policies')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_POLICY_READ)
   async getPoliciesForVenue(@Param('id') venueId: number): Promise<any[]> {
     return this.venuePolicyService.getPoliciesForVenue(venueId);
   }

@@ -8,42 +8,43 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'entity/user/user.entity';
 import { Repository } from 'typeorm';
 import { checkFieldExists, globalError } from 'utils/checkFieldExists';
+import { randomInt } from 'crypto';
+import * as dayjs from 'dayjs';
+
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     private jwtService: JwtService,
-    private readonly mailService: MailService,
-    private readonly i18n: I18nService
+    public readonly mailService: MailService,
+    public readonly i18n: I18nService
   ) {}
 
-  async signup(dto: CreateUserDto) {
-    await checkFieldExists(this.userRepository, { email: dto.email }, this.i18n.t('events.email_already_exists'), false, 400);
-    await checkFieldExists(this.userRepository, { phone: dto.phone }, this.i18n.t("events.phone_already_exists") , false, 400);
-
-    const hash = await argon.hash(dto.password);
-    const { password, status, role, ...rest } = dto;
-
-    const user = this.userRepository.create({ password: hash, role, ...rest });
-    const savedUser = await this.userRepository.save(user);
-
-    const userWithoutPassword = await this.userRepository.findOne({
-      where: { id: savedUser.id },
-      relations: ['role'],
-      select: ['id', 'phone', 'role', 'status', 'email', 'full_name', 'created_at', 'updated_at'],
-    });
-    
-
-    return userWithoutPassword;
-  }
 
   async signin(dto: CreateUserDto) {
-    
     const user = await this.userRepository.findOne({ where: { email: dto.email }, relations: ['role'] });
     if (!user) throw new UnauthorizedException(this.i18n.t('events.invalid_email_or_password'));
 
+    if (user.status === 'pending') {
+      // Generate a new OTP if user status is 'pending'
+      const otpCode = randomInt(100000, 999999); // Generate OTP
+      const otpExpire = dayjs().add(5, 'minutes').toDate(); // OTP expires in 5 minutes
+  
+      // Update the user's OTP and expiry time in the database
+      user.otpToken = otpCode.toString();
+      user.otpExpire = otpExpire;
+  
+      await this.userRepository.save(user); // Save the updated user
+  
+      // Send OTP via email
+      await this.mailService.sendOTPEmail(user.email, otpCode.toString(), "verify email");
+  
+      // Throw an error to inform the user to check their email
+      throw new globalError(this.i18n.t('events.check_your_email_for_verification') , 403 ); 
+    }
+
+    
     const comparePassword = await argon.verify(user.password, dto.password);
     if (!comparePassword) throw new UnauthorizedException(this.i18n.t('events.invalid_email_or_password'));
 
@@ -84,7 +85,7 @@ export class AuthService {
       otpExpire: otpExpire,
     });
 
-    await this.mailService.sendOTPEmail(email, otp);
+    await this.mailService.sendOTPEmail(email, otp , "reset your password" );
 
     return { message: this.i18n.t('events.otp_sent') };
   }
@@ -92,13 +93,17 @@ export class AuthService {
   async resetPassword(dto: any) {
     const { email, otp, newPassword, confirmPassword, currentPassword } = dto;
 
-    if (newPassword !== confirmPassword) {
-      throw new BadRequestException(this.i18n.t('events.password_mismatch'));
-    }
-
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new BadRequestException(this.i18n.t('events.user_not_found'));
+    }
+    // ✅ التأكد من أن المستخدم قام بتفعيل حسابه
+    if (user.status !== 'active') {
+      throw new UnauthorizedException('Your account is not verified. Please verify your email before signing in.');
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException(this.i18n.t('events.password_mismatch'));
     }
 
     if (otp) {
@@ -116,7 +121,8 @@ export class AuthService {
         otpToken: null,
         otpExpire: null,
       });
-    } else {
+    } 
+    else {
       if (!currentPassword) {
         throw new BadRequestException(this.i18n.t('events.current_password_required'));
       }
@@ -147,9 +153,6 @@ export class AuthService {
     return otp;
   }
 
-
-  
-
   async generateAccessToken(user: User): Promise<string> {
     const payload = { id: user.id, email: user.email, role: user.role.id };
     return this.jwtService.signAsync(payload, {
@@ -167,9 +170,9 @@ export class AuthService {
   }
 
   async verifyRefreshToken(token: string): Promise<any> {
-    if(!token) globalError(this.i18n.t('events.refresh_token_required'), 400);
+    if (!token) globalError(this.i18n.t('events.refresh_token_required'), 400);
     const payload = await this.jwtService.verifyAsync(token, { secret: process.env.JWT_REFRESH_SECRET });
-    
+
     if (!payload) {
       throw new UnauthorizedException(this.i18n.t('events.invalid_refresh_token'));
     }

@@ -44,6 +44,7 @@ export class ServiceController {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     restQueryParams["field:is_predefined"] = true;
 
+    // return this.serviceRepository.find( {   where: {is_predefined : true} , relations : ["iconMedia"] , })
     return this.serviceService.FIND(
       'service',
       search ,
@@ -64,7 +65,7 @@ export class ServiceController {
     @UseGuards(AuthGuard)
     @Permissions(EPermissions.EQUIPMENT_READ)
     async findGlobalAndUserEquipment(@Query() query, @Req() req) {
-        const userId = req.user.id;  // Extract user ID from the token
+        const userId = req.user.id; 
         return this.serviceRepository.find( {   where: [{ user_id: userId } , {is_predefined : true} ], relations : ["iconMedia"] , })
     }
 

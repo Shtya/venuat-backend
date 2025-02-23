@@ -45,8 +45,8 @@ export class VenuePackageServiceController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_PACKAGE_SERVICE_UPDATE)
-  async updateService(@Param('id') id: number, @Body('price') price: number) {
-    return this.service.updateServiceInPackage(id, price);
+  async updateService(@Param('id') id: number, @Body('price') price: number , @Body('count') count: number) {
+    return this.service.updateServiceInPackage(id, price , count);
   }
 
   @Delete(':id')

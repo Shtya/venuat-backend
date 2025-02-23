@@ -20,7 +20,7 @@ async function bootstrap() {
     origin: configService.get('ALLOWED_ORIGINS')?.split(',') || '*', // Allow specific origins or all
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    allowedHeaders: 'Content-Type,Authorization,Accept-Language',
+    allowedHeaders: 'Content-Type,Authorization,x-lang',
     exposedHeaders: 'Content-Length,Content-Range',
   });
 

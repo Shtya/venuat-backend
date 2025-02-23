@@ -137,7 +137,7 @@ export class BaseService<T> {
               }
             });
 
-            qb.andWhere(`${entityName}.status = :status`, { status: 'answered' });
+            status && qb.andWhere(`${entityName}.status = :status`, { status: 'answered' });
 
           })
         );
@@ -264,9 +264,9 @@ export class BaseService<T> {
     const entity = await this.repository.findOne({ where: { id } as any, relations: relations });
     if (!entity) {
       throw new NotFoundException(this.i18n.t('events.record_not_found', { args: { id } }));
+      // return 
     }
     return entity;
-    // return checkEntityExists(this.repository, id, );
   }
 
   async remove(id: any) {

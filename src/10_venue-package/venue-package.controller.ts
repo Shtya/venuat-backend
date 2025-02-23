@@ -12,7 +12,6 @@ import { EPermissions } from 'enums/Permissions.enum';
 @Controller('venue-packages')
 export class VenuePackageController {
   constructor(
-    
     private readonly venuePackageService: VenuePackageService) {}
 
 
@@ -26,8 +25,6 @@ export class VenuePackageController {
 
 
   @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_PACKAGE_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     
@@ -46,26 +43,18 @@ export class VenuePackageController {
   }
 
 
-  @Get('/:venue_id')
+  @Get('/:venue_id/venue')
   async getVenuePackages(@Param('venue_id') venue_id: number) {
     return this.venuePackageService.getForVenue(venue_id)
   }
 
 
-  @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_PACKAGE_READ)
-  async findForVenue() {
-   
-  }
-
 
   @Get(':id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_PACKAGE_READ)
   findOne(@Param('id') id: number) {
     return this.venuePackageService.findOne(id , ["services"  , "equipments"  ]);
   }
+
 
   @Put(':id')
   @UseGuards(AuthGuard)

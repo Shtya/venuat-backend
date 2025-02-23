@@ -29,6 +29,7 @@ export class VenuePackageService extends BaseService<VenuePackage> {
 
 
 
+  
 
   async customCreate(dto: CreateVenuePackageDto, req) {
     await checkFieldExists(this.venueRepo, { id: dto.venue_id }, "venue doesn't exist.", true, 404);
@@ -63,6 +64,7 @@ export class VenuePackageService extends BaseService<VenuePackage> {
         package: venuePackage,
         service: service,
         price: 0,
+        count : 0
     }));
     await this.venuePackageServiceRepo.save(venuePackageServices);
 

@@ -4,6 +4,19 @@
   "code_must_be_unique": "The code must be unique.",
   "website_settings_not_found": "Website settings with ID {id} not found.",
   "service_not_exist": "The service does not exist.",
+  "check_your_email_for_verification" : "Please check your email to verify your account.",
+  "success": "Registration successful!",
+
+
+    "otp_sent2": "OTP sent to email, please verify your account",
+    "user_not_found": "User not found!",
+    "user_already_verified": "User already verified!",
+    "invalid_or_expired_otp": "Invalid or expired OTP!",
+    "account_verified_successfully": "Account verified successfully. You can now sign in.",
+    "user_not_found_repeat": "User not found!",
+    "user_already_verified_or_invalid_request": "User already verified or the request is invalid!",
+    "new_otp_sent": "New OTP sent to your email. Please verify your account.",  
+
 
   "startDateRequired": "Start date is required.",
   "startDateMustBeDate": "Start date must be a valid date.",
@@ -163,7 +176,6 @@
   "phone_already_exists": "This phone number already exists.",
   "try_after_5min": "Please wait {remainingTime} seconds before requesting another verification code.",
   "otp_sent": "Verification code has been sent to your email. Please check your inbox.",
-  "invalid_or_expired_otp": "Verification code is invalid or expired.",
   "current_password_required": "Current password is required.",
   "current_password_incorrect": "Current password is incorrect.",
 

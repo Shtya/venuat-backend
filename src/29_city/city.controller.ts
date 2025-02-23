@@ -58,8 +58,8 @@ export class CityController {
 
 
   @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.CITIES_READ)
+  // @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.CITIES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     
@@ -78,8 +78,8 @@ export class CityController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.CITIES_READ)
+  // @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.CITIES_READ)
   findOne(@Param('id') id: string) {
     return this.cityService.findOne(+id, ['country']);
   }

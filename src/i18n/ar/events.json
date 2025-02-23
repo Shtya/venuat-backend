@@ -4,7 +4,17 @@
   "code_must_be_unique": "يجب أن يكون الكود فريدًا.",
   "website_settings_not_found": "إعدادات الموقع بالمعرف {id} غير موجودة.",
   "service_not_exist": "الخدمة غير موجودة.",
+  "check_your_email_for_verification": "يرجى التحقق من بريدك الإلكتروني لتفعيل حسابك.",
 
+  "success": "تم التسجيل بنجاح!",
+
+  "otp_sent2": "تم إرسال OTP إلى بريدك الإلكتروني، يرجى التحقق من حسابك",
+  "user_not_found": "المستخدم غير موجود!",
+  "user_already_verified": "تم التحقق من المستخدم بالفعل!",
+  "account_verified_successfully": "تم التحقق من الحساب بنجاح. يمكنك الآن تسجيل الدخول.",
+  "user_not_found_repeat": "المستخدم غير موجود!",
+  "user_already_verified_or_invalid_request": "المستخدم تم التحقق منه بالفعل أو الطلب غير صالح!",
+  "new_otp_sent": "تم إرسال OTP جديدة إلى بريدك الإلكتروني. يرجى التحقق من حسابك.",
 
   "startDateRequired": "تاريخ البداية مطلوب.",
   "startDateMustBeDate": "يجب أن يكون تاريخ البداية تاريخًا صالحًا.",

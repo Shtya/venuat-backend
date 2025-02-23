@@ -37,8 +37,6 @@ export class VenueFaqController {
 
 
   @Get('/pending/:venue_id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_FAQ_READ)
   async getPendingQuestions(@Param('venue_id') venue_id: number) {
     return this.venueFaqRepository.find({ 
       where: { status: 'pending', venue: { id: venue_id } } 
@@ -69,8 +67,6 @@ export class VenueFaqController {
 
   // * ✅ استرجاع جميع الأسئلة التي تمت الإجابة عليها فقط
   @Get('/answered')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_FAQ_READ)
   async findAnswered() {
     return this.venueFaqRepository.find({
       where: { status: 'answered' },
@@ -105,8 +101,6 @@ export class VenueFaqController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_FAQ_READ)
   async findAll(@Query() query) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams } = query;
 
@@ -125,8 +119,6 @@ export class VenueFaqController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_FAQ_READ)
   findOne(@Param('id') id: number) {
     return this.venueFaqService.findOne(id);
   }

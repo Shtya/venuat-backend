@@ -41,7 +41,7 @@ export class VenueCalendarController {
   @Get(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.VENUE_CALENDAR_READ)
-  findOne(@Param('id') id: number): Promise<VenueCalendar> {
+  findOne(@Param('id') id: number) {
     return this.venueCalendarService.findOne(id );
   }
 

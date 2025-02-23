@@ -25,8 +25,8 @@ export class OccasionTypeController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.OCCASION_TYPES_READ)
+  // @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.OCCASION_TYPES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     
@@ -46,8 +46,8 @@ export class OccasionTypeController {
 
 
   @Get(':id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.OCCASION_TYPES_READ)
+  // @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.OCCASION_TYPES_READ)
   findOne(@Param('id') id: string) {
     return this.occasionTypeService.findOne(+id);
   }

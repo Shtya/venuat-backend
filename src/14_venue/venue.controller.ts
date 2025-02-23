@@ -33,8 +33,8 @@ export class VenueController {
 
 
   @Get()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUES_READ)
+  // @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.VENUES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     return   this.venueService.FIND(
@@ -54,8 +54,8 @@ export class VenueController {
 
 
   @Get("find-all")
-@UseGuards(AuthGuard)
-@Permissions(EPermissions.VENUES_READ)
+// @UseGuards(AuthGuard)
+// @Permissions(EPermissions.VENUES_READ)
 async findAll2(@Query() query) {
   const {
     page,
@@ -109,8 +109,7 @@ async findAll2(@Query() query) {
 
 
   @Get(':id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUES_READ)
+  // @UseGuards(AuthG
   async findOne(@Param('id') id: number) {
     return  this.venueService.customFindOne(id)
   }

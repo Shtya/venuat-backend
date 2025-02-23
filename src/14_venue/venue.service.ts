@@ -45,6 +45,7 @@ export class VenueService extends BaseService<Venue> {
   public relationsOne: string[] = [
     'occasion',
     'ratings',
+    "property" ,"property.city" , "property.city.country" ,
     // 'venueServices',
     // 'venueEquipments',
     // 'reservations',
@@ -52,6 +53,7 @@ export class VenueService extends BaseService<Venue> {
     // "venuePackages.services.service",
     // "venuePackages.equipments.equipment",
     'venueGalleries',
+
     // 'venueFeatures',
     // 'venuePolicies.policy',
     'venueFAQs',
@@ -200,6 +202,7 @@ export class VenueService extends BaseService<Venue> {
   const similarVenues = await this.venueRepository.find({
     where: { occasion:{id : venue.occasion.id}, id: Not(id) }, // استثناء القاعة الحالية
     take: 3, 
+    relations : ["property" , "venueGalleries" ,"property.city" , "property.city.country"   , "ratings" ] ,
     order: { visitCount: 'DESC' },
   });
 

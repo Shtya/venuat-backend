@@ -6,6 +6,7 @@ import { RoleSignup } from 'enums/Role.enum';
 export enum UserStatus {
   ACTIVE = 'active',
   INACTIVE = 'inActive',
+  PENDING = "pending"
 }
 
 export class CreateUserDto {

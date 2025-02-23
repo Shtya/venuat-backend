@@ -64,7 +64,7 @@ export class VenueCalendarService extends BaseService<VenueCalendar> {
   }
 
   // Update a calendar entry
-  async updateCustom(id: number, updateVenueCalendarDto: UpdateVenueCalendarDto): Promise<VenueCalendar> {
+  async updateCustom(id: number, updateVenueCalendarDto: UpdateVenueCalendarDto) {
     const calendarEntry = await this.findOne(id);
 
     // Check for overlapping dates (excluding the current entry)

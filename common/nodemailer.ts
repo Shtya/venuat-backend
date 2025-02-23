@@ -13,7 +13,7 @@ export class MailService {
 
   // 
   
-  async sendOTPEmail(to: string, otp: string) {
+  async sendOTPEmail(to: string, otp: string , actionType:string) {
     const htmlContent = `
     <!DOCTYPE html>
     <html>
@@ -71,31 +71,28 @@ export class MailService {
       </style>
     </head>
     <body>
-      <div class="email-container">
-        <div class="logo">
-          <img class="img" src="${process.env.LOGO}" alt="logo not available at the moment" />
-        </div>
-        <div class="content">
-          <h2>Reset Your Password</h2>
-          <p>We received a request to reset your password. Use the OTP code below to proceed:</p>
-          <div> 
-            <div class="otp-code">${otp}</div>
-          </div>
-          <p>If you didn’t request this, please ignore this email.</p>
-          <p>This OTP code is valid for 5 minutes.</p>
-        </div>
-        <div class="footer">
-          <p>&copy; ${new Date().getFullYear()} Your Project Name. All rights reserved.</p>
-        </div>
+  <div class="email-container">
+    <div class="content">
+      <h2>Your OTP Code</h2>
+      <p>We received a request to ${actionType}. Use the OTP code below to proceed:</p>
+      <div>
+        <div class="otp-code">${otp}</div>
       </div>
-    </body>
+      <p>This OTP code is valid for 5 minutes.</p>
+      <p>If you did not request this, please ignore this email.</p>
+    </div>
+    <div class="footer">
+      <p>&copy; ${new Date().getFullYear()} Your Project Name. All rights reserved.</p>
+    </div>
+  </div>
+</body>
     </html>
     `;
       
         await this.transporter.sendMail({
           from: `"${process.env.PROJECT_NAME}" <${process.env.EMAIL_USER}>`,
           to,
-          subject: 'Reset Your Password',
+          subject: actionType,
           html: htmlContent,
         });
       }

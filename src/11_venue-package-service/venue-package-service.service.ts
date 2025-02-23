@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'common/base/base.service';
 import { PackagePriceUpdate } from 'common/package-price-updater.service';
@@ -20,6 +20,7 @@ export class VenuePackageServiceService extends BaseService<VenuePackageService>
   }
 
 
+
   async addServiceToPackage(dto: CreateVenuePackageServiceDto): Promise<VenuePackageService> {
     const service = await this.serviceRepo.findOne({ where : {id : dto.service } });
   
@@ -30,7 +31,8 @@ export class VenuePackageServiceService extends BaseService<VenuePackageService>
     const venuePackageService = this.venuePackageServicerepo.create({ 
       package: { id: dto.package }, 
       service, 
-      price: dto.price 
+      price: dto.price ,
+      count: dto.count,
     });
   
     await this.venuePackageServicerepo.save(venuePackageService);
@@ -39,19 +41,21 @@ export class VenuePackageServiceService extends BaseService<VenuePackageService>
     return venuePackageService;
   }
 
+
   async getPackageServices(packageId: number) {
     return this.venuePackageServicerepo.find({ where: { package: { id: packageId } }, relations: ['service' , "service.iconMedia" ]  })  ;
   }
   
 
-  async updateServiceInPackage(id: number, newPrice: number) {
-    const venuePackageService = await this.venuePackageServicerepo.findOne({ where: { id }, relations: ['service' , "service.iconMedia" ] });
 
+  async updateServiceInPackage(id: number, newPrice: number, newCount: number) {
+    const venuePackageService = await this.venuePackageServicerepo.findOne({ where: { id }, relations: ['service' , "service.iconMedia" , "package" ] });
     if (!venuePackageService) {
-      throw new Error('Service not found in package');
+      throw new NotFoundException('Service not found in package');
     }
 
     venuePackageService.price = newPrice;
+    venuePackageService.count = newCount;
     await this.venuePackageServicerepo.save(venuePackageService);
     await this.priceUpdater.updatePackagePrice(venuePackageService.package.id);
 

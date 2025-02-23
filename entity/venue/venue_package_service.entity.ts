@@ -16,6 +16,9 @@ export class VenuePackageService {
 
   @Column('decimal')
   price: number;
+  
+  @Column()
+  count: number;
 
   @CreateDateColumn()
   created_at: Date;
