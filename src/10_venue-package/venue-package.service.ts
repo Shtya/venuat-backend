@@ -80,9 +80,9 @@ export class VenuePackageService extends BaseService<VenuePackage> {
           order: { created_at: 'DESC' }, // ترتيب الباقات من الأحدث إلى الأقدم
         });
     
-        if (!venuePackages.length) {
-          throw new NotFoundException(`No packages found for venue ID ${venue_id}`);
-        }
+        // if (!venuePackages.length) {
+        //   throw new NotFoundException(`No packages found for venue ID ${venue_id}`);
+        // }
     
         return venuePackages;
   }

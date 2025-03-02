@@ -22,7 +22,6 @@ export class UserController {
   @Get('users')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.USERS_READ)
-
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     

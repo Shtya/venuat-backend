@@ -32,39 +32,20 @@ export class VenueService extends BaseService<Venue> {
   public relations: string[] = [
     'occasion',
     'ratings',
-    // 'venueServices',
-    // 'venueEquipments',
-    // 'reservations',
-    // "venuePackages",
-    'venueGalleries',
-    // 'venueFeatures',
-    // 'venuePolicies',
-    // 'venueFAQs',
-    // 'venueCalendars',
+    'venueGalleries'
   ];
   public relationsOne: string[] = [
     'occasion',
     'ratings',
     "property" ,"property.city" , "property.city.country" ,
-    // 'venueServices',
-    // 'venueEquipments',
-    // 'reservations',
-    // "venuePackages",
-    // "venuePackages.services.service",
-    // "venuePackages.equipments.equipment",
     'venueGalleries',
-
-    // 'venueFeatures',
-    // 'venuePolicies.policy',
-    'venueFAQs',
-    // 'venueCalendars',
+    'venueFAQs', "venuePackages",
+    "venueServices" , "venueServices.service",
+    "venueEquipments" , "venueEquipments.equipment",
+    "venueFeatures" , "venueFeatures.feature",
   ];
 
   
-
-
-  //'venueFeatures.feature',
-  //'venuePolicies.policy',
 
   async createCustom(dto: CreateVenueDto): Promise<Venue> {
     dto.occasion && (await checkFieldExists(this.occasionTypeRepository, { id: dto.occasion }, this.i18n.t('events.venue.occasion_type_not_found'), true)); //!'Occasion type does not exist'
@@ -185,7 +166,7 @@ export class VenueService extends BaseService<Venue> {
   }
 
 
-  async customFindOne(id) {
+  async customFindOne(id , packageId?: number ) {
     const venue = await this.venueRepository.findOne({ where: { id }, relations: this.relationsOne });
 
     if (!venue) {
@@ -198,14 +179,62 @@ export class VenueService extends BaseService<Venue> {
     const totalRating = venue.ratings.reduce((sum, e) => sum + +e.rating, 0);
     const averageRating = totalRating / venue.ratings.length;
 
+
+    let totalPrice = venue.price || 0
+    let packagePrice = 0
+    let additionalServicesPrice = 0
+    let additionalEquipmentsPrice = 0
+
+    //! package 
+    if (venue.venuePackages && venue.venuePackages.length > 0) {
+      if (packageId) {
+
+        const selectedPackage = venue.venuePackages.find(pkg => pkg.id === packageId);
+        if (selectedPackage) {
+          packagePrice =  (selectedPackage.package_price || 0) - venue?.price ;
+          totalPrice +=  (selectedPackage.package_price || 0) - venue?.price ;
+        }
+      }
+    }
+
+    
+
+    //! Add service prices
+    if (venue.venueServices && venue.venueServices.length > 0) {
+      let calc = venue.venueServices.reduce((sum, service) => sum + ((service.price || 0 ) * (service.count || 1)), 0);
+      additionalServicesPrice = calc
+      totalPrice += calc
+    }
+
+    //! Add equipment prices
+    if (venue.venueEquipments && venue.venueEquipments.length > 0) {
+      let calc = venue.venueEquipments.reduce((sum, equipment) => sum + ((equipment.price || 0) * (equipment.count || 1)), 0);
+      additionalEquipmentsPrice = calc 
+      totalPrice += calc
+    }
+
+    //! Add 15% VAT
+    const vatRate = 0.15;
+    const vatAmount = totalPrice * vatRate;
+    const totalPriceWithVAT = totalPrice + vatAmount;
+
+
     // ✅ جلب القاعات المشابهة بناءً على نفس `occasion_id`
   const similarVenues = await this.venueRepository.find({
     where: { occasion:{id : venue.occasion.id}, id: Not(id) }, // استثناء القاعة الحالية
     take: 3, 
-    relations : ["property" , "venueGalleries" ,"property.city" , "property.city.country"   , "ratings" ] ,
+    relations : ["property" , "venueGalleries"  ,"property.city" , "property.city.country"   , "ratings" ] ,
     order: { visitCount: 'DESC' },
   });
 
-    return { averageRating: Number(averageRating).toFixed(1), venue , similarVenues };
+    return { averageRating: Number(averageRating).toFixed(1), venue : { 
+      ...venue ,
+      packagePrice : packagePrice.toFixed(2) ,
+      additionalServicesPrice : additionalServicesPrice.toFixed(2) ,
+      additionalEquipmentsPrice : additionalEquipmentsPrice.toFixed(2) ,
+      totalPriceWithVAT : totalPriceWithVAT.toFixed(2),
+      vatAmount  : vatAmount.toFixed(2) ,
+      totalPrice : totalPrice.toFixed(2),
+    } ,  similarVenues };
   }
 }

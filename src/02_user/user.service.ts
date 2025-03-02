@@ -41,7 +41,7 @@ export class UserService extends BaseService<User> {
     const id = payload.id;
 
     // Find the user by ID
-    const user = await this.userRepository.findOne({ where: { id }, relations: ['role' , "properties" , "reservations"] });
+    const user = await this.userRepository.findOne({ where: { id }, relations: ['role' , "reservations.venue.property",  "reservations.venue.property.city" ,  "reservations.venue.property.city.country" ,  "reservations" , "reservations.venue" , "reservations.venue.venueGalleries" ] });
     if (!user) throw new BadRequestException(this.i18n.t('events.not_found_in_database'));
 
     return user;

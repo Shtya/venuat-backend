@@ -54,64 +54,62 @@ export class VenueController {
 
 
   @Get("find-all")
-// @UseGuards(AuthGuard)
-// @Permissions(EPermissions.VENUES_READ)
-async findAll2(@Query() query) {
-  const {
-    page,
-    limit,
-    search,
-    sortBy,
-    sortOrder,
-    visitor,
-    city,
-    occasion,
-    startOccasion,
-    mostVisited,
-    highestRated,
-    newest,
-    minPrice, // New: Minimum price
-    maxPrice, // New: Maximum price
-    ...restQueryParams
-  } = query;
+  async findAll2(@Query() query) {
+    const {
+      page,
+      limit,
+      search,
+      sortBy,
+      sortOrder,
+      visitor,
+      city,
+      occasion,
+      startOccasion,
+      mostVisited,
+      highestRated,
+      newest,
+      minPrice, // New: Minimum price
+      maxPrice, // New: Maximum price
+      ...restQueryParams
+    } = query;
 
-  let occasionIds: number | number[] | undefined;
+    let occasionIds: number | number[] | undefined;
 
-  if (occasion) {
-    if (Array.isArray(occasion)) {
-      // If occasion is an array, convert each item to a number
-      occasionIds = occasion.map(id => Number(id));
-    } else {
-      // If occasion is a single value, convert it to a number
-      occasionIds = Number(occasion);
+    if (occasion) {
+      if (Array.isArray(occasion)) {
+        // If occasion is an array, convert each item to a number
+        occasionIds = occasion.map(id => Number(id));
+      } else {
+        // If occasion is a single value, convert it to a number
+        occasionIds = Number(occasion);
+      }
     }
-  }
 
-  return this.venueService.customFind(
-    'venue',
-    page,
-    limit,
-    sortBy,
-    sortOrder,
-    undefined, // fieldsExclude
-    visitor ? Number(visitor) : undefined,
-    city ? Number(city) : undefined,
-    occasionIds ,
-    startOccasion,
-    mostVisited === 'true',
-    highestRated === 'true',
-    newest === 'true',
-    minPrice ? Number(minPrice) : undefined, 
-    maxPrice ? Number(maxPrice) : undefined 
-  );
-}
+    return this.venueService.customFind(
+      'venue',
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+      undefined, // fieldsExclude
+      visitor ? Number(visitor) : undefined,
+      city ? Number(city) : undefined,
+      occasionIds ,
+      startOccasion,
+      mostVisited === 'true',
+      highestRated === 'true',
+      newest === 'true',
+      minPrice ? Number(minPrice) : undefined, 
+      maxPrice ? Number(maxPrice) : undefined 
+    );
+  }
 
 
 
   @Get(':id')
   // @UseGuards(AuthG
-  async findOne(@Param('id') id: number) {
-    return  this.venueService.customFindOne(id)
+  async findOne(@Param('id') id: number , @Query("packageId") packageId : number ) {
+    return  this.venueService.customFindOne(id , packageId)
   }
 
   @Put(':id')

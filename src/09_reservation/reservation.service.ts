@@ -24,7 +24,7 @@ export class ReservationService extends BaseService<Reservation> {
     
     await checkFieldExists( this.userRepo , {id : dto.user} , this.i18n.t("events.user_not_exist") , true , 404  ) 
     await checkFieldExists( this.venueRepo , {id : dto.venue} , this.i18n.t("events.venue_not_exist") , true , 404  ) 
-    await checkFieldExists( this.packageRepo , {id : dto.package} , this.i18n.t("events.package_not_exist") , true , 404  ) 
+    dto.package && await checkFieldExists( this.packageRepo , {id : dto.package} , this.i18n.t("events.package_not_exist") , true , 404  ) 
 
     const overlappingReservation = await this.reservationRepo
       .createQueryBuilder('reservation')

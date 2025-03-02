@@ -14,11 +14,11 @@ export class CreatePropertyDto {
   // @IsNotEmpty({ message: 'events.property.file_required' })  // Uncomment if needed
   file: string;
 
-  @IsNumber({}, { message: 'events.property.vendor_id_number' })  // Using translation key
+  // @IsNumber({}, { message: 'events.property.vendor_id_number' })  // Using translation key
   @IsNotEmpty({ message: 'events.property.vendor_id_required' })  // Using translation key
   vendor_id: any;
 
-  @IsNumber({}, { message: 'events.property.city_id_number' })  // Using translation key
+  // @IsNumber({}, { message: 'events.property.city_id_number' })  // Using translation key
   @IsNotEmpty({ message: 'events.property.city_id_required' })  // Using translation key
   city_id: any;
 

@@ -137,7 +137,7 @@ export class BaseService<T> {
               }
             });
 
-            status && qb.andWhere(`${entityName}.status = :status`, { status: 'answered' });
+            status && qb.andWhere(`${entityName}.status = :status`, { status: status });
 
           })
         );

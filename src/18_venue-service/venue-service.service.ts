@@ -39,12 +39,14 @@ export class VenueServiceService {
     const venueService = this.venueServiceRepository.create({
       venue,
       service,
+      count: dto.count,
       price: dto.price,
     });
     await this.venueServiceRepository.save(venueService);
 
     return venueService;
   }
+
 
   async removeServiceFromVenue(venueId: number, serviceId: number) {
     const venueService = await this.venueServiceRepository.findOne({

@@ -33,25 +33,52 @@ export class PropertyController {
 
 
 
-
   @Post()
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.PROPERTIES_CREATE)
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  async create(@Body() dto : CreatePropertyDto, @UploadedFile() fileName: any) {
+  async create(@Body() dto, @UploadedFile() fileName: any) {
     const { name, description, file, city_id, vendor_id } = dto;
     const user : any = await this.userRepository.findOne({where : {id : vendor_id } , relations : ["role"] });
     
-    if (fileName) 
-      dto.file = `${process.env.BASE_URL}/uploads/${fileName.filename}`;
+
+    let uploadImg= `${process.env.BASE_URL}/uploads/${fileName.filename}`
+    // if (fileName) 
+    //   await uploadImg = ;
+
+    
     
     await checkFieldExists(this.userRepository, { id: dto.vendor_id },  this.i18n.t("events.vendor_not_found" , {args : {vendor_id}} )  , true);  
     if(user?.role?.name  !== "vendor" ) throw new BadRequestException( this.i18n.t("events.only_vendors_can_create")  );  
     await checkFieldExists(this.cityRepository, { id: dto.city_id },  this.i18n.t("events.city_not_found" , {args : {city_id}})  , true);  
 
-    return this.propertyService.create({ name, description, file, city: city_id, vendor: vendor_id });
+    return this.propertyService.create({ name , description, file : uploadImg , city: city_id, vendor: vendor_id });
   }
 
+
+  
+  @Put(':id')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.PROPERTIES_UPDATE)
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  async update(@Param('id') id: number, @Body() dto, @UploadedFile() fileName: any) {
+    const existingProperty = await this.propertyService.findOne(id);
+    const user : any = await this.userRepository.findOne({where : {id : dto.vendor_id } , relations : ["role"] });
+
+    if (!existingProperty) 
+      throw new NotFoundException( this.i18n.t("events.property_not_found" , {args : {id}})  );  
+    
+    if (fileName) 
+      dto.file = `${process.env.BASE_URL}/uploads/${fileName.filename}`;
+    
+
+    if (dto.vendor_id) await checkFieldExists(this.userRepository, { id: dto.vendor_id },  this.i18n.t("events.vendor_not_found" , {args: {vendor_id : dto.vendor_id}} )  , true);  
+    if(user?.role?.name  !== "vendor" ) throw new BadRequestException( this.i18n.t("events.only_vendors_can_create")  );  
+
+    if (dto.city_id) await checkFieldExists(this.cityRepository, { id: dto.city_id },  this.i18n.t("events.city_not_found" , {args: {city_id : dto.city_id}} )  , true);  
+
+    const { name , description , file , city_id:city , vendor_id:vendor  } = dto;
+
+    return this.propertyService.update(id,   {name , description , file , city , vendor  }    );
+  }
   
   @Get()
   @UseGuards(AuthGuard)
@@ -80,32 +107,6 @@ export class PropertyController {
   @Permissions(EPermissions.PROPERTIES_READ)
   findOne(@Param('id') id: string) {
     return this.propertyService.findOne(+id, ['city', 'vendor', 'venue']);
-  }
-
-
-  @Put(':id')
-  @UseGuards(AuthGuard)
-  @Permissions(EPermissions.PROPERTIES_UPDATE)
-  @UseInterceptors(FileInterceptor('file', multerOptions))
-  async update(@Param('id') id: number, @Body() dto, @UploadedFile() fileName: any) {
-    const existingProperty = await this.propertyService.findOne(id);
-    const user : any = await this.userRepository.findOne({where : {id : dto.vendor_id } , relations : ["role"] });
-
-    if (!existingProperty) 
-      throw new NotFoundException( this.i18n.t("events.property_not_found" , {args : {id}})  );  
-    
-    if (fileName) 
-      dto.file = `${process.env.BASE_URL}/uploads/${fileName.filename}`;
-    
-
-    if (dto.vendor_id) await checkFieldExists(this.userRepository, { id: dto.vendor_id },  this.i18n.t("events.vendor_not_found" , {args: {vendor_id : dto.vendor_id}} )  , true);  
-    if(user?.role?.name  !== "vendor" ) throw new BadRequestException( this.i18n.t("events.only_vendors_can_create")  );  
-
-    if (dto.city_id) await checkFieldExists(this.cityRepository, { id: dto.city_id },  this.i18n.t("events.city_not_found" , {args: {city_id : dto.city_id}} )  , true);  
-
-    const { name , description , file , city_id:city , vendor_id:vendor  } = dto;
-
-    return this.propertyService.update(id,   {name , description , file , city , vendor  }    );
   }
 
 

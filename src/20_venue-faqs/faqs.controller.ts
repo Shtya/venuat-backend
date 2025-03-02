@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, NotFoundException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, NotFoundException, UseGuards, Req } from '@nestjs/common';
 import { VenueFAQ } from 'entity/venue/venue_faq.entity';
 import { VenueFaqService } from './faqs.service';
 import { AnswerVenueFaqDto, CreateVenueFaqDto, UpdateVenueFaqDto } from 'dto/faqs/faqs.dto';
@@ -23,14 +23,12 @@ export class VenueFaqController {
 
 
   @Post('/question')
-  async createQuestion(@Body() dto: CreateVenueFaqDto) {
+  @UseGuards(AuthGuard)
+  async createQuestion(@Body() dto: CreateVenueFaqDto , @Req() req ) {
     const venue = await this.venueRepository.findOne({ where: { id: dto.venue_id } });
 
-    if (!venue) {
-      throw new NotFoundException(`Venue with ID ${dto.venue_id} not found`);
-    }
-
-    const faq = this.venueFaqRepository.create({ ...dto, venue, status: 'pending' });
+    if (!venue)  throw new NotFoundException(`Venue with ID ${dto.venue_id} not found`); 
+    const faq = this.venueFaqRepository.create({ ...dto, venue , user_id : req?.user?.id , status: 'pending' });
 
     return this.venueFaqRepository.save(faq);
   }
@@ -114,7 +112,27 @@ export class VenueFaqController {
       [], // exclude some fields
       [], // Relations
       ['question', 'answer' , "status" ], // search parameters
-      {...restQueryParams , status :"answered"}
+      {...restQueryParams , status :"answered"} , true , "answered"
+    );
+  }
+
+
+
+  @Get("/questions-user")
+  async findAll2(@Query() query) {
+    const { page, limit, search, sortBy, sortOrder, ...restQueryParams } = query;
+
+    return this.venueFaqService.FIND(
+      'venue_faq',
+      search,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+      [], // exclude some fields
+      ["venue"], // Relations
+      ['question', 'answer' , "status" ], // search parameters
+      {...restQueryParams , status :"pending"} 
     );
   }
 

@@ -17,6 +17,12 @@ export class Venue {
   @PrimaryGeneratedColumn()
   id: number;
 
+
+  @Column({ nullable: true })
+  type_place : string;
+
+
+
   @Column('jsonb', { nullable: true })
   name: any;
 
@@ -91,6 +97,9 @@ export class Venue {
 
   @Column({ nullable: true })
   profile_image_id: number
+
+  @Column({ type: "double precision", default: 0.15, nullable: true }) // Add VAT column with default value of 15%
+  vat: number;
 
   @ManyToOne(() => OccasionType, occasionType => occasionType.venues)
   @JoinColumn({ name: "occasion_id" })

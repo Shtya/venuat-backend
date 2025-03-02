@@ -2,6 +2,10 @@ import { IsNotEmpty, IsString, IsNumber, IsBoolean, IsOptional, IsObject } from 
 import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateVenueDto {
+
+  type_place ?: string;
+
+
   @IsOptional()
   @IsObject({ message: 'events.venue_name_invalid' })
   name?: any;

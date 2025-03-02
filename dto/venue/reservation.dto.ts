@@ -5,7 +5,8 @@ import {
   IsEnum, 
   IsNumber, 
   IsOptional, 
-  IsString 
+  IsString, 
+  isObject
 } from 'class-validator';
 import { ReservationStatus } from 'entity/reservation/reservation.entity';
 
@@ -18,11 +19,11 @@ export class CreateReservationDto {
   @IsNumber({}, { message: "events.venueIdMustBeNumber" }) // يجب أن يكون معرف القاعة رقمًا
   venue: number;
 
-  @IsNotEmpty({ message: "events.packageIdRequired" }) // معرف الباقة مطلوب
+  @IsOptional() // معرف الباقة مطلوب
   @IsNumber({}, { message: "events.packageIdMustBeNumber" }) // يجب أن يكون معرف الباقة رقمًا
   package: number;
 
-  @IsNotEmpty({ message: "events.packageDetailsRequired" }) // تفاصيل الباقة مطلوبة
+  @IsOptional()
   package_details: object;
 
   @IsNotEmpty({ message: "events.reservationStatusRequired" }) // حالة الحجز مطلوبة
@@ -54,7 +55,7 @@ export class CreateReservationDto {
   @IsOptional()
   special_requests?: object;
 
-  @IsNotEmpty({ message: "events.paymentMethodRequired" }) // طريقة الدفع مطلوبة
-  @IsString({ message: "events.paymentMethodMustBeString" }) // يجب أن تكون طريقة الدفع نصًا صحيحًا
+  @IsOptional()
+  @IsString({ message: "events.paymentMethodMustBeString" }) 
   payment_method: string;
 }

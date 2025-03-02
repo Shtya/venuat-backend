@@ -18,6 +18,9 @@ export class VenueService {
   @Column('decimal')
   price: number;
 
+  @Column('int')
+  count: number; // Quantity of the equipment at the venue
+
   @CreateDateColumn()
   created_at: Date;
 

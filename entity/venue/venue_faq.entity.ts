@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Venue } from './venue.entity';
+import { User } from 'entity/user/user.entity';
 
 @Entity()
 export class VenueFAQ {
@@ -9,6 +10,9 @@ export class VenueFAQ {
   @ManyToOne(() => Venue, (venue) => venue.venueFAQs)
   @JoinColumn({ name: 'venue_id' })
   venue: Venue;
+
+  @Column({ default: null })  // ✅ حقل جديد لتحديد حالة السؤال
+  user_id: number;
 
   @Column('jsonb')
   question: any;

@@ -25,6 +25,10 @@ export class AddServiceToVenueDto {
 
   @IsNumber({}, { message: "events.service_price_invalid" }) // السعر غير صالح
   price: number;
+
+  @IsNumber({}, { message: 'events.addequipment.count' })
+  @IsNotEmpty({ message: 'events.addequipment.count_required' })
+  count: number;
 }
 
 export class CreateVenueServiceDto {

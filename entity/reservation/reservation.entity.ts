@@ -20,11 +20,11 @@ export class Reservation {
   @ManyToOne(() => Venue, (venue) => venue.reservations, { onDelete: 'CASCADE' })
   venue: Venue;
 
-  @ManyToOne(() => VenuePackage, (e) => e.reservations, { onDelete: 'CASCADE' })
-  package: VenuePackage;
+  @ManyToOne(() => VenuePackage, (e) => e.reservations, { onDelete: 'CASCADE' , nullable : true })
+  package: VenuePackage | null;;
 
-  @Column('jsonb')
-  package_details: object;
+  @Column('jsonb', { nullable: true })
+  package_details: object | null;
 
   @Column({ type: 'enum', enum: ReservationStatus })
   status: ReservationStatus;
@@ -45,10 +45,10 @@ export class Reservation {
   total_price: number;
 
   @Column('jsonb', { nullable: true })
-  special_requests: object;
+  special_requests: object | null;
 
-  @Column({ type: 'varchar', length: 255 })
-  payment_method: string;
+  @Column({ type: 'varchar', length: 255 , nullable: true  })
+  payment_method: string | null;
 
   @CreateDateColumn()
   created_at: Date;
