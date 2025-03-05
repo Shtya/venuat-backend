@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsObject, IsOptional } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional } from 'class-validator';
 
 export class CreatePolicyDto {
   @IsObject({ message: "events.policyNameMustBeObject" }) // يجب أن يكون الاسم كائن JSON
@@ -25,6 +25,16 @@ export class AddPolicyToVenueDto {
   @IsNotEmpty({ message: "events.policyIdRequired" }) // معرف السياسة مطلوب
   policy_id: number;
 }
+
+
+export class AddPoliciesToVenueDto {
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNumber({}, { each: true }) // Ensures each item is a number
+  policy_ids: number[];
+}
+
+
 
 export class CreateVenuePolicyDto {
   @IsNumber({}, { message: "events.venueIdMustBeNumber" }) // يجب أن يكون معرف القاعة رقمًا

@@ -1,7 +1,7 @@
 // src/venue-equipment/venue-equipment.controller.ts
 import { Controller, Post, Body, Param, Put, Delete, Get, UseGuards } from '@nestjs/common';
 import { VenueEquipmentService } from './venue-equipment.service';
-import { AddEquipmentToVenueDto } from 'dto/venue/equipment.dto';
+import { AddEquipmentsToVenueDto, AddEquipmentToVenueDto } from 'dto/venue/equipment.dto';
 import { AuthGuard } from 'src/01_auth/auth.guard';
 import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
@@ -13,10 +13,20 @@ export class VenueEquipmentController {
 
   @Post(':id/add-equipment')
   @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_EQUIPMENT_CREATE)
+  // @Permissions(EPermissions.VENUE_EQUIPMENT_CREATE)
   addEquipmentToVenue(@Param('id') venueId: number, @Body() addEquipmentToVenueDto: AddEquipmentToVenueDto) {
     return this.venueEquipmentService.addEquipmentToVenue(venueId, addEquipmentToVenueDto);
   }
+
+  @Post(':id/add-equipments')
+  @UseGuards(AuthGuard)
+  // @Permissions(EPermissions.VENUE_EQUIPMENT_CREATE)
+  async addEquipmentsToVenue(@Param('id') venueId: number, @Body() addEquipmentToVenueDto: AddEquipmentsToVenueDto) {
+    return this.venueEquipmentService.addEquipmentsToVenue(venueId, addEquipmentToVenueDto);
+  }
+
+
+
 
   @Get(':id/equipment')
   @UseGuards(AuthGuard)

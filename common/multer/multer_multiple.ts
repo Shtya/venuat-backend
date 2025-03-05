@@ -7,7 +7,7 @@ export const multerMultiplyOptions = {
     destination: (req, file, cb) => {
       const uploadDir = './uploads/venues'; // Folder to save uploaded files
       if (!existsSync(uploadDir)) {
-        mkdirSync(uploadDir, { recursive: true }); // Create if it doesn't exist
+        mkdirSync(uploadDir, { recursive: true }); // Create folder if it doesn't exist
       }
       cb(null, uploadDir);
     },
@@ -20,8 +20,8 @@ export const multerMultiplyOptions = {
   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
 
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-      cb(null, true); // Allow only images
+    if (file.mimetype.match(/\/(jpg|jpeg|png|svg\+xml)$/)) { 
+      cb(null, true); // Allow JPG, JPEG, PNG, and SVG
     } else {
       cb(new Error('Unsupported file type'), false);
     }

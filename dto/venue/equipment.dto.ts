@@ -18,6 +18,28 @@ export class AddEquipmentToVenueDto {
   price_per: string;
 }
 
+
+
+import { IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class EquipmentDto {
+  equipment_id: number; // ID of the equipment
+  count: number;
+  price: number;
+  price_per: string;
+}
+
+export class AddEquipmentsToVenueDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => EquipmentDto)
+  equipments: EquipmentDto[];
+}
+
+
+
+
 import { PartialType } from '@nestjs/mapped-types';
 import { IsObject, IsOptional, IsBoolean } from 'class-validator';
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param, Delete, Body, NotFoundException, UseGuards } from '@nestjs/common';
 import { VenuePolicyService } from './venue-policy.service';
-import { AddPolicyToVenueDto } from 'dto/policy/policy.dto';
+import { AddPoliciesToVenueDto, AddPolicyToVenueDto } from 'dto/policy/policy.dto';
 import { AuthGuard } from 'src/01_auth/auth.guard';
 import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
@@ -16,6 +16,19 @@ export class VenuePolicyController {
   async addPolicyToVenue(@Param('id') venueId: number, @Body() addPolicyToVenueDto: AddPolicyToVenueDto) {
     return this.venuePolicyService.addPolicyToVenue(venueId, addPolicyToVenueDto);
   }
+
+
+  // 
+  @Post(':id/add-policies')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.VENUE_POLICY_CREATE)
+  async addPoliciesToVenue(
+      @Param('id') venueId: number,
+      @Body() addPolicyToVenueDto: AddPoliciesToVenueDto
+  ) {
+      return this.venuePolicyService.addPoliciesToVenue(venueId, addPolicyToVenueDto);
+  }
+
 
   // Remove a policy from a venue
   @Delete(':id/remove-policy/:policyId')

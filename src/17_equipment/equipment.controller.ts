@@ -18,7 +18,7 @@ export class EquipmentController {
 
   @Post()
   @UseGuards(AuthGuard)
-  @Permissions(EPermissions.EQUIPMENT_CREATE)
+  // @Permissions(EPermissions.EQUIPMENT_CREATE)
   async create(@Body() dto: CreateEquipmentDto, @Req() req: any) {
     await checkFieldExists(this.mediaRepo, { id: dto.icon_media_id }, this.equipmentService.i18n.t("events.media.not_found", { args: { id: dto.icon_media_id } })    , true , 404);
     

@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AddPolicyToVenueDto } from 'dto/policy/policy.dto';
+import { AddPoliciesToVenueDto, AddPolicyToVenueDto } from 'dto/policy/policy.dto';
 import { Policy } from 'entity/venue/policy.entity';
 import { Venue } from 'entity/venue/venue.entity';
 import { VenuePolicy } from 'entity/venue/venue_policy.entity';
 import { I18nService } from 'nestjs-i18n';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class VenuePolicyService {
@@ -40,6 +40,48 @@ export class VenuePolicyService {
 
     return this.venuePolicyRepository.save(venuePolicy);
   }
+
+
+  async addPoliciesToVenue(venueId: number, addPolicyToVenueDto: AddPoliciesToVenueDto): Promise<VenuePolicy[]> {
+    const venue = await this.venueRepository.findOne({ where: { id: venueId } });
+    if (!venue) {
+        throw new NotFoundException(this.i18n.t("events.venue_not_found2", { args: { venueId } }));
+    }
+
+    // Find all requested policies
+    const policies = await this.policyRepository.findBy({
+        id: In(addPolicyToVenueDto.policy_ids),
+    });
+
+    if (policies.length !== addPolicyToVenueDto.policy_ids.length) {
+        throw new NotFoundException(this.i18n.t("events.some_policies_not_found"));
+    }
+
+    // Get already existing policies for this venue
+    const existingVenuePolicies = await this.venuePolicyRepository.find({
+        where: { venue: { id: venueId } },
+        relations: ['policy'], // Ensure policies are loaded
+    });
+
+    const existingPolicyIds = new Set(existingVenuePolicies.map(vp => vp.policy.id));
+
+    // Filter out policies that are already assigned to the venue
+    const newPolicies = policies.filter(policy => !existingPolicyIds.has(policy.id));
+
+    // If all policies are already assigned, return an empty array
+    if (newPolicies.length === 0) {
+        return [];
+    }
+
+    // Create venue policies for only new policies
+    const venuePolicies = newPolicies.map(policy =>
+        this.venuePolicyRepository.create({ venue, policy })
+    );
+
+    return this.venuePolicyRepository.save(venuePolicies);
+}
+
+
 
 
   // Remove a policy from a venue

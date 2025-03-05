@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Venue } from 'entity/venue/venue.entity';
 import { VenueEquipment } from 'entity/venue/venue_equipment.entity';
 import { Equipment } from 'entity/venue/equipment.entity';
-import { AddEquipmentToVenueDto, UpdateVenueEquipmentDto } from 'dto/venue/equipment.dto';
+import { AddEquipmentsToVenueDto, AddEquipmentToVenueDto, UpdateVenueEquipmentDto } from 'dto/venue/equipment.dto';
 import { I18n, I18nService } from 'nestjs-i18n';
 
 @Injectable()
@@ -47,6 +47,56 @@ export class VenueEquipmentService {
     return this.venueEquipmentRepository.save(venueEquipment);
   }
 
+
+
+  async addEquipmentsToVenue(venueId: number, dto: AddEquipmentsToVenueDto) {
+    const venue = await this.venueRepository.findOne({
+      where: { id: venueId },
+      relations: ['venueEquipments'],
+    });
+  
+    if (!venue) {
+      throw new NotFoundException(this.i18n.t('events.venue.not_found', { args: { id: venueId } }));
+    }
+  
+    const addedEquipments = [];
+  
+    for (const equipmentDto of dto.equipments) {
+      const equipment = await this.equipmentRepository.findOne({ where: { id: equipmentDto.equipment_id } });
+  
+      if (!equipment) {
+        throw new NotFoundException(
+          this.i18n.t('events.equipment_not_found', { args: { equipmentId: equipmentDto.equipment_id } })
+        );
+      }
+  
+      // تحقق مما إذا كانت المعدات مضافة مسبقًا إلى هذا الـ Venue
+      const existingVenueEquipment = venue.venueEquipments.find(vs => vs?.equipment?.id === equipment.id);
+  
+      if (existingVenueEquipment) {
+        throw new NotFoundException(
+          this.i18n.t('events.equipment.already_associated', {
+            args: { equipmentId: equipment.id, venueId: venue.id },
+          })
+        );
+      }
+  
+      // إنشاء العلاقة بين المكان والمعدات
+      const venueEquipment = this.venueEquipmentRepository.create({
+        venue,
+        equipment,
+        count: equipmentDto.count,
+        price: equipmentDto.price,
+        price_per: equipmentDto.price_per,
+      });
+  
+      await this.venueEquipmentRepository.save(venueEquipment);
+      addedEquipments.push(venueEquipment);
+    }
+  
+    return addedEquipments;
+  }
+  
 
 
   async getEquipmentForVenue(venueId: number) {

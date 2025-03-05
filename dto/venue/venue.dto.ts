@@ -86,7 +86,7 @@ export class CreateVenueDto {
   @IsNumber({}, { message: 'events.venue_property_id_invalid' })
   property: number;
 
-  @IsNotEmpty({ message: 'events.occasion_type_id_invalid' })
+  @IsOptional()
   @IsNumber({}, { message: 'events.occasion_type_id_invalid' })
   occasion: number;
 }

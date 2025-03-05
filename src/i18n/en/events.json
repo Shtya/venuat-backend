@@ -6,6 +6,7 @@
   "service_not_exist": "The service does not exist.",
   "check_your_email_for_verification" : "Please check your email to verify your account.",
   "success": "Registration successful!",
+  "some_policies_not_found" : "Some policies not found in the list of policies",
 
 
     "otp_sent2": "OTP sent to email, please verify your account",
@@ -189,7 +190,7 @@
   "phone_required": "Phone number is required.",
   "password_invalid": "Password must be a string.",
   "password_required": "Password is required.",
-  "role_invalid": "Role must be one of the following: (user, admin)",
+  "role_invalid": "Role must be one of the following: (user , vendor, admin)",
   "role_required": "Role is required.",
   "status_invalid": "Status must be either active or inactive.",
   "avatar_invalid": "Avatar must be a string.",

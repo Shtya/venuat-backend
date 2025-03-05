@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AddServiceToVenueDto } from 'dto/venue/service.dto';
+import { AddServicesToVenueDto, AddServiceToVenueDto } from 'dto/venue/service.dto';
 import { VenueService } from 'entity/venue/venue_service.entity';
 import { Service } from 'entity/venue/service.entity';
 import { Venue } from 'entity/venue/venue.entity';
@@ -48,9 +48,56 @@ export class VenueServiceService {
   }
 
 
+  async addServicesToVenue(venueId: number, dto: AddServicesToVenueDto) {
+    const venue = await this.venueRepository.findOne({
+      where: { id: venueId },
+      relations: ['venueServices'],
+    });
+  
+    if (!venue) {
+      throw new NotFoundException(this.i18n.t('events.venue.not_found', { args: { id: venueId } }));
+    }
+  
+    const addedServices = [];
+  
+    for (const serviceDto of dto.services) {
+      const service = await this.serviceRepository.findOne({ where: { id: serviceDto.service } });
+  
+      if (!service) {
+        throw new NotFoundException(this.i18n.t('events.service.not_found', { args: { id: serviceDto.service } }));
+      }
+  
+      // تحقق مما إذا كانت الخدمة مضافة مسبقًا إلى هذا الـ Venue
+      const existingVenueService = venue.venueServices.find(vs => vs?.service?.id === service.id);
+  
+      if (existingVenueService) {
+        throw new NotFoundException(
+          this.i18n.t('events.service.already_associated', {
+            args: { serviceId: service.id, venueId: venue.id },
+          })
+        );
+      }
+  
+      // إنشاء العلاقة بين المكان والخدمة
+      const venueService = this.venueServiceRepository.create({
+        venue,
+        service,
+        count: serviceDto.count,
+        price: serviceDto.price,
+      });
+  
+      await this.venueServiceRepository.save(venueService);
+      addedServices.push(venueService);
+    }
+  
+    return addedServices;
+  }
+  
+
+
   async removeServiceFromVenue(venueId: number, serviceId: number) {
     const venueService = await this.venueServiceRepository.findOne({
-      where: { venue: { id: venueId }, service: { id: serviceId } },
+      where: { venue: { id: venueId },  id: serviceId },
     });
 
     if (!venueService) {
@@ -74,8 +121,10 @@ export class VenueServiceService {
 
     return venueServices.map(vs => ({
       id: vs.service.id,
+      VenueServiceID : vs.id ,
       name: vs.service.name,
       price: vs.price,
+      count : vs.count ,
       created_at: vs.created_at,
       updated_at: vs.updated_at,
     }));

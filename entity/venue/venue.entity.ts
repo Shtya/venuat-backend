@@ -21,6 +21,17 @@ export class Venue {
   @Column({ nullable: true })
   type_place : string;
 
+  @Column({ nullable: true })
+  is_multi_place : boolean;
+
+
+  @Column({ nullable: true })
+  responsiblePersonName : string;
+
+  @Column({ nullable: true })
+  nearestMainAddress : string;
+
+
 
 
   @Column('jsonb', { nullable: true })
@@ -28,6 +39,11 @@ export class Venue {
 
   @Column('jsonb', { nullable: true })
   description: any;
+
+
+
+
+
 
   @Column({ nullable: true })
   operating_system: string;
@@ -96,7 +112,7 @@ export class Venue {
   updated_at: Date;
 
   @Column({ nullable: true })
-  profile_image_id: number
+  profile_image: string
 
   @Column({ type: "double precision", default: 0.15, nullable: true }) // Add VAT column with default value of 15%
   vat: number;

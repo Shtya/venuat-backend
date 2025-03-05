@@ -1,5 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNotEmpty, IsObject, IsOptional, IsBoolean, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsObject, IsOptional, IsBoolean, IsNumber, IsString, IsArray, ValidateNested } from 'class-validator';
 
 export class CreateServiceDto {
   @IsObject({ message: "events.service_name_invalid" }) // اسم الخدمة غير صالح
@@ -17,6 +18,19 @@ export class CreateServiceDto {
   @IsOptional()
   @IsBoolean({ message: "events.service_is_predefined_invalid" }) // قيمة غير صالحة لمعرف الخدمة
   is_predefined?: boolean;
+}
+
+export class ServiceDto {
+  service: any; // ID of the service
+  count: any;
+  price: any;
+}
+
+export class AddServicesToVenueDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ServiceDto)
+  services: ServiceDto[];
 }
 
 export class AddServiceToVenueDto {

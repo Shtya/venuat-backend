@@ -1,4 +1,4 @@
-import { Controller, Get , Body, Patch, Param, Delete, UseGuards , UseInterceptors, UploadedFile , Req , Query, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get , Body, Patch, Param, Delete, UseGuards , UseInterceptors, UploadedFile , Req , Query, Request, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/01_auth/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -10,12 +10,14 @@ import { checkFieldExists } from 'utils/checkFieldExists';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'entity/user/user.entity';
 import { Repository } from 'typeorm';
+import { Role } from 'entity/permission/role.entity';
 
 
 @Controller('')
 export class UserController {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
     private readonly userService: UserService
   ) {}
 
@@ -102,6 +104,15 @@ export class UserController {
     if (dto.email) await checkFieldExists(this.userRepository, { email: dto.email }, 'this phone is already in use');
     if (file) dto.avatar = `${process.env.BASE_URL}/uploads/${file.filename}`;
 
+
+    if (dto.role) {
+      const role = await this.roleRepository.findOne({ where: { name: dto.role } });
+      if (!role) {
+        throw new BadRequestException("Role not found");
+      }
+      dto.role = role.id; // استبدال الاسم بالـ ID
+    }
+
     return this.userService.update(id, dto);
   }
 
@@ -120,6 +131,9 @@ export class UserController {
 
     return this.userService.remove(id);
   }
+
+
+
 
   @Patch('users/:id')
   @UseInterceptors(FileInterceptor('avatar', multerOptions))
