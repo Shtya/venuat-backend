@@ -9,6 +9,16 @@ import { EPermissions } from 'enums/Permissions.enum';
 export class VenuePolicyController {
   constructor(private readonly venuePolicyService: VenuePolicyService) {}
 
+
+   @Post("/multi-policies")
+    @UseGuards(AuthGuard)
+    async create(@Body() dtos) {
+     return this.venuePolicyService.addPoliciesToVenue2(dtos)
+    }
+  
+
+
+
   // Add a policy to a venue
   @Post(':id/add-policy')
   @UseGuards(AuthGuard)
@@ -40,7 +50,7 @@ export class VenuePolicyController {
 
   // Get all policies for a venue
   @Get(':id/policies')
-  async getPoliciesForVenue(@Param('id') venueId: number): Promise<any[]> {
+  async getPoliciesForVenue(@Param('id') venueId: number) {
     return this.venuePolicyService.getPoliciesForVenue(venueId);
   }
 }

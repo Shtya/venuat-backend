@@ -41,6 +41,47 @@ export class VenuePolicyService {
     return this.venuePolicyRepository.save(venuePolicy);
   }
 
+  async addPoliciesToVenue2(dtos: { 
+    venue_id: number; 
+    policies: { name: { en: string; ar: string }; description: { en: string; ar: string } }[] 
+}): Promise<VenuePolicy[]> {
+    
+    if (!Array.isArray(dtos.policies) || dtos.policies.length === 0) {
+        throw new NotFoundException('Invalid input: Expected an array of Policies');
+    }
+
+    // البحث عن القاعة
+    const venue = await this.venueRepository.findOne({ where: { id: dtos.venue_id } });
+    if (!venue) {
+        throw new NotFoundException(this.i18n.t('events.venue_not_found2', { args: { venue_id: dtos.venue_id } }));
+    }
+
+    const policiesToSave = [];
+    
+    for (const policyDto of dtos.policies) {
+        // البحث عن السياسة باستخدام الاسم الإنجليزي
+        let policy = await this.policyRepository.findOne({ where: { name: policyDto.name.en } });
+
+        // إذا لم تكن موجودة، يتم إنشاؤها
+        if (!policy) {
+            policy = this.policyRepository.create({ 
+                name: policyDto.name, 
+                description: policyDto.description 
+            });
+            policy = await this.policyRepository.save(policy);
+        }
+
+        // إنشاء الربط بين القاعة والسياسة
+        const venuePolicy = this.venuePolicyRepository.create({ venue, policy });
+        policiesToSave.push(venuePolicy);
+    }
+
+    return this.venuePolicyRepository.save(policiesToSave);
+}
+
+
+
+
 
   async addPoliciesToVenue(venueId: number, addPolicyToVenueDto: AddPoliciesToVenueDto): Promise<VenuePolicy[]> {
     const venue = await this.venueRepository.findOne({ where: { id: venueId } });
@@ -100,22 +141,32 @@ export class VenuePolicyService {
 
   // Get all policies for a venue
   async getPoliciesForVenue(venueId: number): Promise<any[]> {
+    // البحث عن القاعة
     const venue = await this.venueRepository.findOne({ where: { id: venueId } });
     if (!venue) {
-      throw new NotFoundException( this.i18n.t("events.venue_not_found2", { args: { venueId } }) );
+        throw new NotFoundException(this.i18n.t("events.venue_not_found2", { args: { venueId } }));
     }
 
+    // جلب السياسات المرتبطة بهذه القاعة
     const venuePolicies = await this.venuePolicyRepository.find({
-      where: { venue: { id: venueId } },
-      relations: ['policy'], // Load the associated policy
+        where: { venue: { id: venueId } },
+        relations: ['policy'], // تحميل بيانات السياسات
     });
 
+    // تحويل البيانات إلى تنسيق يدعم الترجمة
     return venuePolicies.map(vp => ({
-      id: vp.policy.id,
-      name: vp.policy.name,
-      description: vp.policy.description,
-      created_at: vp.created_at,
-      updated_at: vp.updated_at,
+        id: vp.policy.id,
+        name: {
+            en: vp.policy.name?.en || "N/A",
+            ar: vp.policy.name?.ar || "غير متوفر"
+        },
+        description: {
+            en: vp.policy.description?.en || "N/A",
+            ar: vp.policy.description?.ar || "غير متوفر"
+        },
+        created_at: vp.created_at,
+        updated_at: vp.updated_at,
     }));
-  }
+}
+
 }

@@ -30,6 +30,8 @@ export class Venue {
 
   @Column({ nullable: true })
   nearestMainAddress : string;
+  @Column({ nullable: true })
+  acceptTerms : boolean;
 
 
 
