@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, UseInterceptors, ValidationPipe, UploadedFiles, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, UseInterceptors, ValidationPipe, UploadedFiles, UseGuards, Req } from '@nestjs/common';
 import { CreateVenueGalleryDto, UpdateVenueGalleryDto } from 'dto/venue/venue_gallery.dto';
 import { VenueGalleryService } from './venue-gallery.service';
 import { checkFieldExists } from 'utils/checkFieldExists';
@@ -26,10 +26,11 @@ export class VenueGalleryController {
   @Permissions(EPermissions.VENUE_GALLERY_CREATE)
   @UseInterceptors(FilesInterceptor('files', 10, multerMultiplyOptions)) // Accept up to 10 images
   @UsePipes(new ValidationPipe({ transform: true }))
-  async uploadGallery( @UploadedFiles() files: Express.Multer.File[],  @Body() dto  ) {
+  async uploadGallery( @UploadedFiles() files: Express.Multer.File[],  @Body() dto , @Req() req  ) {
   await checkFieldExists(this.venueRepo , {id : dto.venue_id} , this.venueGalleryService.i18n.t("events.venue_not_found")  , true , 404);
     
-    const imgPaths = files.map(file => `${process.env.BASE_URL}/uploads/venues/${file.filename}`); // Get file paths
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const imgPaths = files.map(file => `${baseUrl}/uploads/venues/${file.filename}`); // Get file paths
     dto.imgs = imgPaths; 
     return this.venueGalleryService.addGalleryImages(dto);
   }
@@ -69,9 +70,12 @@ export class VenueGalleryController {
   @Permissions(EPermissions.VENUE_GALLERY_CREATE)
   @UseInterceptors(FilesInterceptor('files', 10, multerMultiplyOptions)) // Accept up to 10 images
   @UsePipes(new ValidationPipe({ transform: true }))
-  async update(@Param('id') id: number,  @UploadedFiles() files: Express.Multer.File[],  @Body() dto ) {
+  async update(@Param('id') id: number,  @UploadedFiles() files: Express.Multer.File[],  @Body() dto , @Req() req ) {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    
     await checkFieldExists(this.venueRepo, { id: dto.venue_id }, this.venueGalleryService.i18n.t("events.venue_not_found") , true, 404);
-    const imgPaths = files.map(file => `${process.env.BASE_URL}/uploads/venues/${file.filename}`); // Get file paths
+    const imgPaths = files.map(file => `${baseUrl}/uploads/venues/${file.filename}`); // Get file paths
     dto.imgs = imgPaths;     
     return this.venueGalleryService.updateGallery(id, dto);
   }

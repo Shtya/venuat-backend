@@ -35,12 +35,14 @@ export class PropertyController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  async create(@Body() dto, @UploadedFile() fileName: any) {
+  async create(@Body() dto, @UploadedFile() fileName: any , @Req() req) {
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     const { name, description, file, city_id, vendor_id } = dto;
     const user : any = await this.userRepository.findOne({where : {id : vendor_id } , relations : ["role"] });
     
 
-    let uploadImg= `${process.env.BASE_URL}/uploads/${fileName.filename}`
+    let uploadImg= `${baseUrl}/uploads/${fileName.filename}`
     // if (fileName) 
     //   await uploadImg = ;
 
@@ -59,7 +61,10 @@ export class PropertyController {
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.PROPERTIES_UPDATE)
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  async update(@Param('id') id: number, @Body() dto, @UploadedFile() fileName: any) {
+  async update(@Param('id') id: number, @Body() dto, @UploadedFile() fileName: any , @Req() req) {
+
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     const existingProperty = await this.propertyService.findOne(id);
     const user : any = await this.userRepository.findOne({where : {id : dto.vendor_id } , relations : ["role"] });
 
@@ -67,7 +72,7 @@ export class PropertyController {
       throw new NotFoundException( this.i18n.t("events.property_not_found" , {args : {id}})  );  
     
     if (fileName) 
-      dto.file = `${process.env.BASE_URL}/uploads/${fileName.filename}`;
+      dto.file = `${baseUrl}/uploads/${fileName.filename}`;
     
 
     if (dto.vendor_id) await checkFieldExists(this.userRepository, { id: dto.vendor_id },  this.i18n.t("events.vendor_not_found" , {args: {vendor_id : dto.vendor_id}} )  , true);  

@@ -92,6 +92,7 @@ export class UserController {
   @Permissions(EPermissions.USERS_UPDATE)
   @UseInterceptors(FileInterceptor('avatar', multerOptions))
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto, @UploadedFile() file: any , @Request() req:any ) {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     if(req.user.role.name != "admin"){
       if (id != req.user.id) {
@@ -102,7 +103,7 @@ export class UserController {
     
     if (dto.phone) await checkFieldExists(this.userRepository, { phone: dto.phone }, 'this phone is already in use');
     if (dto.email) await checkFieldExists(this.userRepository, { email: dto.email }, 'this phone is already in use');
-    if (file) dto.avatar = `${process.env.BASE_URL}/uploads/${file.filename}`;
+    if (file) dto.avatar = `${baseUrl}/uploads/${file.filename}`;
 
 
     if (dto.role) {
@@ -140,6 +141,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.USERS_UPDATE)
   async updateAccount(@Param('id') id: number, @Body() dto: UpdateUserDto, @UploadedFile() file: any , @Request() req : any ): Promise<User> {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     if(req.user.role.name != "admin"){
       if (id != req.user.id) {
@@ -148,7 +150,7 @@ export class UserController {
     }
 
     if (file) {
-      dto.avatar = `${process.env.BASE_URL}/uploads/${file.filename}`;
+      dto.avatar = `${baseUrl}/uploads/${file.filename}`;
     }
     return this.userService.updateAccount(id, dto);
   }

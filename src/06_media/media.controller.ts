@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors, Get, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, Get, Param, Put, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MediaService } from './media.service';
 import { CreateMediaDto, UpdateMediaDto, UploadQueryDto } from 'dto/media/media.dto';
@@ -15,8 +15,8 @@ export class MediaController {
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.MEDIA_CREATE)
   @UseInterceptors(FileInterceptor('file', multerConfig))
-  async uploadFile(@Query() query: UploadQueryDto, @UploadedFile() file: Express.Multer.File, @Body() createMediaDto: CreateMediaDto) {
-    return this.mediaService.createCustom(createMediaDto, file, query);
+  async uploadFile(@Query() query: UploadQueryDto, @UploadedFile() file: Express.Multer.File, @Body() createMediaDto: CreateMediaDto , @Req() req) {
+    return this.mediaService.createCustom(createMediaDto, file, query , req);
   }
 
   @Get()
@@ -51,8 +51,8 @@ export class MediaController {
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.MEDIA_UPDATE)
   @UseInterceptors(FileInterceptor('file', multerConfig))
-  async updateMedia(@Param('id') id: number, @Body() dto: any, @Query() query: UploadQueryDto, @UploadedFile() file: Express.Multer.File) {
-    return this.mediaService.updateCustom(id, dto, file, query);
+  async updateMedia(@Param('id') id: number, @Body() dto: any, @Query() query: UploadQueryDto, @UploadedFile() file: Express.Multer.File , @Req() req) {
+    return this.mediaService.updateCustom(id, dto, file, query , req);
   }
 
   @Delete(':id')

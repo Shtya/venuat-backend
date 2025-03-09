@@ -16,8 +16,9 @@ export class MediaService extends BaseService<Media> {
     super(mediaRepository);
   }
 
-  async createCustom(dto: any, file: Express.Multer.File, query: UploadQueryDto) {
+  async createCustom(dto: any, file: Express.Multer.File, query: UploadQueryDto , req) {
     const { model_id, manipulations, custom_properties, name, order } = dto;
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     if (!file && !dto.file_name) {
       throw new BadRequestException( this.i18n.t("events.file_required")); //! 'File is required.'
@@ -27,7 +28,7 @@ export class MediaService extends BaseService<Media> {
     const mime_type = file ? file.mimetype : dto.mime_type;
     const disk = file ? 'local' : dto.disk; // Default to 'local' if file is provided
     const size = file ? file.size : dto.size;
-    const fileUrl = `${process.env.BASE_URL}/uploads/${query.folder}/${query.collection}/${file.filename}`;
+    const fileUrl = `${baseUrl}/uploads/${query.folder}/${query.collection}/${file.filename}`;
 
     
 
@@ -58,8 +59,11 @@ export class MediaService extends BaseService<Media> {
     id: number, // ID of the media entity to update
     dto: any, // Updated DTO
     file: Express.Multer.File, // New file (if provided)
-    query: UploadQueryDto // Query parameters (folder, collection)
+    query: UploadQueryDto,
+    req
   ) {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     const { model_id, manipulations, custom_properties, name, order } = dto;
 
     // Find the existing media entity
@@ -90,7 +94,7 @@ export class MediaService extends BaseService<Media> {
       mime_type = file.mimetype;
       disk = 'local'; // Default to 'local' if a new file is provided
       size = file.size;
-      fileUrl = `${process.env.BASE_URL}/uploads/${query.folder}/${query.collection}/${file.filename}`;
+      fileUrl = `${baseUrl}/uploads/${query.folder}/${query.collection}/${file.filename}`;
     }
 
     // Update media entity
