@@ -12,6 +12,16 @@ export class Policy {
   @Column('jsonb')
   description: any;
 
+
+  @Column({ default: true })
+  is_predefined: boolean;
+
+
+  @Column({ nullable: true }) // Nullable to allow global equipment
+  user_id: number;
+
+
+
   @OneToMany(() => VenuePolicy, venuePolicy => venuePolicy.policy)
   venuePolicies: VenuePolicy[];
 

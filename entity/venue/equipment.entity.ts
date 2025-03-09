@@ -23,7 +23,7 @@ export class Equipment {
   @OneToMany(() => VenuePackageEquipment, (e) => e.equipment)
   equipments: VenuePackageEquipment[];
 
-  @Column({ default: false })
+  @Column({ default: true })
   is_predefined: boolean;
 
   @OneToMany(() => VenueEquipment, venueEquipment => venueEquipment.equipment)

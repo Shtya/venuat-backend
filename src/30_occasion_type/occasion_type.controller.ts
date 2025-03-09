@@ -4,7 +4,6 @@ import { CreateOccasionTypeDto, UpdateOccasionTypeDto } from 'dto/venue/occasion
 import { AuthGuard } from 'src/01_auth/auth.guard';
 import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
-import { checkFieldExists } from 'utils/checkFieldExists';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -25,8 +24,6 @@ export class OccasionTypeController {
   }
 
   @Get()
-  // @UseGuards(AuthGuard)
-  // @Permissions(EPermissions.OCCASION_TYPES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     
@@ -45,9 +42,12 @@ export class OccasionTypeController {
   }
 
 
+  @Get("/on-venues")
+  async findAllOccasionOnVenues() {    
+    return this.occasionTypeService.findAllOccasionOnVenues()
+  }
+
   @Get(':id')
-  // @UseGuards(AuthGuard)
-  // @Permissions(EPermissions.OCCASION_TYPES_READ)
   findOne(@Param('id') id: string) {
     return this.occasionTypeService.findOne(+id);
   }

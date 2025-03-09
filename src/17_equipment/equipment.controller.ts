@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Media } from 'entity/media/media.entity';
 import { Repository } from 'typeorm';
 
+
 @Controller('equipment')
 export class EquipmentController {
   constructor(

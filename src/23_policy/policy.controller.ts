@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { PoliciesService } from './policy.service';
 
 import { Policy } from 'entity/venue/policy.entity';
@@ -13,10 +13,23 @@ export class PoliciesController {
 
   @Post()
   @UseGuards(AuthGuard)
-  @Permissions(EPermissions.VENUE_POLICY_CREATE)
-  create(@Body() createPolicyDto: CreatePolicyDto) {
-    return this.policiesService.create(createPolicyDto);
+  create(@Body() dto: CreatePolicyDto ,  @Req() req: any ) {
+
+    const user = req.user; 
+    const isAdmin = user.role.name === 'admin'; 
+    return this.policiesService.customCreate(dto ,  user.id, isAdmin);
   }
+
+
+  @Post('/bulks')
+  @UseGuards(AuthGuard)
+  createBulk(@Body() dto: CreatePolicyDto[] | CreatePolicyDto, @Req() req: any) {
+    const user = req.user;
+    const isAdmin = user.role.name === 'admin';
+    return this.policiesService.customCreateBult(dto, user.id, isAdmin);
+  }
+
+
 
   @Get()
   @UseGuards(AuthGuard)
@@ -37,6 +50,16 @@ export class PoliciesController {
       restQueryParams    // search with fields
     );
   }
+
+
+    @Get('global-and-user')
+    @UseGuards(AuthGuard)
+    async findGlobalAndUserEquipment(@Query() query, @Req() req) {
+        const userId = req.user.id;   
+        return this.policiesService.findGlobalAndUserEquipment(userId);
+    }
+
+
 
   @Get(':id')
   @UseGuards(AuthGuard)

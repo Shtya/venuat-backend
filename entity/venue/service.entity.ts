@@ -20,7 +20,7 @@ export class Service {
   @Column({ nullable: true })
   venuePackageServices_id: number;
 
-  @Column({ default: false })
+  @Column({ default: true })
   is_predefined: boolean;
 
   @OneToMany(() => VenueService, venueService => venueService.service)

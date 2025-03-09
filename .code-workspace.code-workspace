@@ -1,10 +1,10 @@
 {
   "folders": [
     {
-      "path": "../venuat-backend/"
+      "path": "."
     },
     {
-      "path": "../../nestjs-course"
+      "path": "../Venuat Website"
     }
   ],
   "settings": {
