@@ -41,4 +41,16 @@ export class VenueEquipmentController {
   removeEquipmentFromVenue(@Param('id') id: number) {
     return this.venueEquipmentService.removeEquipmentFromVenue(id);
   }
+
+
+    //! updates a lot of services 
+  // src/venue-service/venue-service.controller.ts
+  @Put(':id/equipments')
+  async updateVenueEquipments(
+    @Param('id') venueId: number,
+    @Body() updateVenueEquipmentsDto,
+  ) {
+    return this.venueEquipmentService.updateVenueEquipments(venueId, updateVenueEquipmentsDto);
+  }
+
 }

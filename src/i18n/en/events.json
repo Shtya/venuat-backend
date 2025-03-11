@@ -1,4 +1,8 @@
 {
+  "equipment" : {
+    "not_found_for_venue" :"equipment with ID {serviceId} not found for venue with ID {venueId}"
+  },
+  "updated" : "updated successfully",
   "price_must_be_Number": "The price must be a valid number.",
   "refresh_token_required": "Refresh token is required.",
   "code_must_be_unique": "The code must be unique.",

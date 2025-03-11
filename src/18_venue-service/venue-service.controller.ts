@@ -40,4 +40,16 @@ export class VenueServiceController {
   async getServicesForVenue(@Param('id') venueId: number) {
     return this.venueServiceService.getServicesForVenue(venueId);
   }
+
+
+  //! updates a lot of services 
+  @Put(':id/services')
+  // @UseGuards(AuthGuard)
+  async updateVenueServices(
+    @Param('id') venueId: number,
+    @Body() updateVenueServicesDto,
+  ) {
+    return this.venueServiceService.updateVenueServices(venueId, updateVenueServicesDto);
+  }
+
 }

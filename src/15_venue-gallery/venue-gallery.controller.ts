@@ -12,8 +12,11 @@ import { multerMultiplyOptions } from 'common/multer/multer_multiple';
 import { AuthGuard } from 'src/01_auth/auth.guard';
 import { Permissions } from 'src/01_auth/permissions.decorators';
 import { EPermissions } from 'enums/Permissions.enum';
+import { ImageUrlInterceptor } from 'src/image-url/image-url.interceptor';
+
 
 @Controller('venue-gallery')
+@UseInterceptors(ImageUrlInterceptor)
 export class VenueGalleryController {
   constructor(
     @InjectRepository(Venue) readonly venueRepo: Repository<Venue>,

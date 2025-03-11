@@ -121,4 +121,40 @@ export class VenueEquipmentService {
 
     return { message: this.i18n.t('events.venue_equipment_deleted', { args: { id: id } }) };
   }
+
+
+    // src/venue-service/venue-service.service.ts
+async updateVenueEquipments(venueId: number, dto) {
+  const updatedServices = [];
+
+  for (const equipmentDto of dto.equipments) {
+    const { equipmentId , count, price } = equipmentDto;
+
+    const venueService = await this.venueEquipmentRepository.findOne({
+      where: { venue: { id: venueId }, id: equipmentId },
+      relations: ['venue', 'equipment'],
+    });
+
+    if (!venueService) {
+      throw new NotFoundException(
+        this.i18n.t('events.equipment.not_found_for_venue', {
+          args: { serviceId: equipmentId, venueId },
+        }),
+      );
+    }
+
+    // Update the count and price
+    venueService.count = count;
+    venueService.price = price;
+
+    await this.venueEquipmentRepository.save(venueService);
+    updatedServices.push(venueService);
+  }
+
+  return {
+    message: this.i18n.t('events.updated', { args: { venueId } }),
+    data: updatedServices,
+  };
+}
+
 }

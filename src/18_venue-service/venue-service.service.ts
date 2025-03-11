@@ -129,4 +129,41 @@ export class VenueServiceService {
       updated_at: vs.updated_at,
     }));
   }
+
+
+  // src/venue-service/venue-service.service.ts
+async updateVenueServices(venueId: number, dto) {
+  const updatedServices = [];
+
+  for (const serviceDto of dto.services) {
+    const { serviceId, count, price } = serviceDto;
+
+    const venueService = await this.venueServiceRepository.findOne({
+      where: { venue: { id: venueId }, id: serviceId },
+      relations: ['venue', 'service'],
+    });
+
+    if (!venueService) {
+      throw new NotFoundException(
+        this.i18n.t('events.service.not_found_for_venue', {
+          args: { serviceId, venueId },
+        }),
+      );
+    }
+
+    // Update the count and price
+    venueService.count = count;
+    venueService.price = price;
+
+    await this.venueServiceRepository.save(venueService);
+    updatedServices.push(venueService);
+  }
+  
+
+  return {
+    message: this.i18n.t('events.updated', { args: { venueId } }),
+    data: updatedServices,
+  };
+}
+
 }

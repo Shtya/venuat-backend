@@ -11,6 +11,7 @@ import { AddFeatureToVenueDto } from 'dto/venue/feature.dto';
 import { Property } from 'entity/property/property.entity';
 import { I18nService } from 'nestjs-i18n';
 import { BaseService } from 'common/base/base.service';
+import { VenuePackage } from 'entity/venue/venue_package.entity';
 
 @Injectable()
 export class VenueService extends BaseService<Venue> {
@@ -23,29 +24,14 @@ export class VenueService extends BaseService<Venue> {
     private featureRepository: Repository<Feature>,
     @InjectRepository(VenueFeature)
     private venueFeatureRepository: Repository<VenueFeature>,
-    @InjectRepository(Property)
-    private propertyRepository: Repository<Property>
+    @InjectRepository(Property) private propertyRepository: Repository<Property> ,
+    @InjectRepository(VenuePackage) private venuePackageRepository: Repository<VenuePackage> ,
   ) {
     super(venueRepository);
   }
 
-  public relations: string[] = [
-    'occasion',
-    'ratings',
-    'venueGalleries'
-  ];
-  public relationsOne: string[] = [
-    'occasion',
-    'ratings',
-    "property" ,"property.city" , "property.city.country" ,
-    'venueGalleries',
-    'venueFAQs', "venuePackages",
-    "venueServices" , "venueServices.service",
-    "venueEquipments" , "venueEquipments.equipment",
-    "venueFeatures" , "venueFeatures.feature",
-  ];
-
-  
+  public relations: string[] = ['occasion', 'ratings', 'venueGalleries'];
+  public relationsOne: string[] = ['occasion', 'ratings', 'property', 'property.city', 'property.city.country', 'venueGalleries', 'venueFAQs', 'venuePackages', 'venueServices', 'venueServices.service', 'venueEquipments', 'venueEquipments.equipment', 'venueFeatures', 'venueFeatures.feature'];
 
   async createCustom(dto: CreateVenueDto): Promise<Venue> {
     dto.occasion && (await checkFieldExists(this.occasionTypeRepository, { id: dto.occasion }, this.i18n.t('events.venue.occasion_type_not_found'), true)); //!'Occasion type does not exist'
@@ -65,21 +51,21 @@ export class VenueService extends BaseService<Venue> {
 
   async customFind(
     entityName: string,
-     page: any = 1,
-     limit: any = 10,
-     sortBy?: string,
-     sortOrder: 'ASC' | 'DESC' = 'DESC',
-     fieldsExclude?: string[],
-     visitor?: number,
-     city?: number,
-     occasion?: number | number[] ,
-     startOccasion?: string,
-     mostVisited?: boolean,
-     highestRated?: boolean,
-     newest?: boolean,
-     minPrice?: number, // New: Minimum price
-      maxPrice?: number 
-    ) {
+    page: any = 1,
+    limit: any = 10,
+    sortBy?: string,
+    sortOrder: 'ASC' | 'DESC' = 'DESC',
+    fieldsExclude?: string[],
+    visitor?: number,
+    city?: number,
+    occasion?: number | number[],
+    startOccasion?: string,
+    mostVisited?: boolean,
+    highestRated?: boolean,
+    newest?: boolean,
+    minPrice?: number, // New: Minimum price
+    maxPrice?: number
+  ) {
     // Existing logic for pagination, sorting, filtering, etc.
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
@@ -97,7 +83,7 @@ export class VenueService extends BaseService<Venue> {
 
     this.relations.forEach(relation => {
       query.leftJoinAndSelect(`${entityName}.${relation}`, relation);
-    }); 
+    });
 
     query.leftJoinAndSelect(`${entityName}.property`, 'property').leftJoinAndSelect('property.city', 'city').leftJoinAndSelect('city.country', 'country');
 
@@ -105,9 +91,8 @@ export class VenueService extends BaseService<Venue> {
     if (visitor !== undefined) query.andWhere('venue.max_capacity >= :visitor', { visitor });
     if (city !== undefined) query.andWhere('property.city.id = :city', { city });
 
-    if (mostVisited)  query.orderBy('venue.visitCount', 'DESC');
-    if (newest)  query.orderBy('venue.created_at', 'DESC');
-    
+    if (mostVisited) query.orderBy('venue.visitCount', 'DESC');
+    if (newest) query.orderBy('venue.created_at', 'DESC');
 
     if (occasion !== undefined) {
       if (Array.isArray(occasion)) {
@@ -127,7 +112,6 @@ export class VenueService extends BaseService<Venue> {
       query.andWhere('venue.price <= :maxPrice', { maxPrice });
     }
 
-
     // Fetch data
     const [data, total] = (await query.getManyAndCount()) as any;
 
@@ -143,30 +127,28 @@ export class VenueService extends BaseService<Venue> {
       });
     }
 
-      const venuesWithAverageRating = data.map(venue => {
-        const totalRating = venue.ratings?.reduce((sum, e) => sum + +e.rating, 0) || 0;
-        const averageRating = venue.ratings?.length > 0 ? totalRating / venue.ratings.length : 0;
-        return {
-          ...venue,
-          averageRating: Number(averageRating).toFixed(1),
-        };
-      });
+    const venuesWithAverageRating = data.map(venue => {
+      const totalRating = venue.ratings?.reduce((sum, e) => sum + +e.rating, 0) || 0;
+      const averageRating = venue.ratings?.length > 0 ? totalRating / venue.ratings.length : 0;
+      return {
+        ...venue,
+        averageRating: Number(averageRating).toFixed(1),
+      };
+    });
 
-      if (highestRated) {
-        venuesWithAverageRating.sort((a, b) => b.averageRating - a.averageRating);
-      }
+    if (highestRated) {
+      venuesWithAverageRating.sort((a, b) => b.averageRating - a.averageRating);
+    }
 
-      const venues = await this.repository.find({})
-      const prices = venues.map(venue => venue.price).filter(price => price !== undefined);
-      const minPriceval = prices.length > 0 ? Math.min(...prices) : undefined;
-      const maxPriceval = prices.length > 0 ? Math.max(...prices) : undefined;
+    const venues = await this.repository.find({});
+    const prices = venues.map(venue => venue.price).filter(price => price !== undefined);
+    const minPriceval = prices.length > 0 ? Math.min(...prices) : undefined;
+    const maxPriceval = prices.length > 0 ? Math.max(...prices) : undefined;
 
-      return { limit: limitNumber, countRecored: total, page: pageNumber, data: venuesWithAverageRating , minPriceval , maxPriceval };
-
+    return { limit: limitNumber, countRecored: total, page: pageNumber, data: venuesWithAverageRating, minPriceval, maxPriceval };
   }
 
-
-  async customFindOne(id , packageId?: number ) {
+  async customFindOne(id, packageId?: number) {
     const venue = await this.venueRepository.findOne({ where: { id }, relations: this.relationsOne });
 
     if (!venue) {
@@ -179,38 +161,34 @@ export class VenueService extends BaseService<Venue> {
     const totalRating = venue.ratings.reduce((sum, e) => sum + +e.rating, 0);
     const averageRating = totalRating / venue.ratings.length;
 
+    let totalPrice = venue.price || 0;
+    let packagePrice = 0;
+    let additionalServicesPrice = 0;
+    let additionalEquipmentsPrice = 0;
 
-    let totalPrice = venue.price || 0
-    let packagePrice = 0
-    let additionalServicesPrice = 0
-    let additionalEquipmentsPrice = 0
-
-    //! package 
+    //! package
     if (venue.venuePackages && venue.venuePackages.length > 0) {
       if (packageId) {
-
         const selectedPackage = venue.venuePackages.find(pkg => pkg.id === packageId);
         if (selectedPackage) {
-          packagePrice =  (selectedPackage.package_price || 0) - venue?.price ;
-          totalPrice +=  (selectedPackage.package_price || 0) - venue?.price ;
+          packagePrice = (selectedPackage.package_price || 0) - venue?.price;
+          totalPrice += (selectedPackage.package_price || 0) - venue?.price;
         }
       }
     }
 
-    
-
     //! Add service prices
     if (venue.venueServices && venue.venueServices.length > 0) {
-      let calc = venue.venueServices.reduce((sum, service) => sum + ((service.price || 0 ) * (service.count || 1)), 0);
-      additionalServicesPrice = calc
-      totalPrice += calc
+      let calc = venue.venueServices.reduce((sum, service) => sum + (service.price || 0) * (service.count || 1), 0);
+      additionalServicesPrice = calc;
+      totalPrice += calc;
     }
 
     //! Add equipment prices
     if (venue.venueEquipments && venue.venueEquipments.length > 0) {
-      let calc = venue.venueEquipments.reduce((sum, equipment) => sum + ((equipment.price || 0) * (equipment.count || 1)), 0);
-      additionalEquipmentsPrice = calc 
-      totalPrice += calc
+      let calc = venue.venueEquipments.reduce((sum, equipment) => sum + (equipment.price || 0) * (equipment.count || 1), 0);
+      additionalEquipmentsPrice = calc;
+      totalPrice += calc;
     }
 
     //! Add 15% VAT
@@ -218,23 +196,129 @@ export class VenueService extends BaseService<Venue> {
     const vatAmount = totalPrice * vatRate;
     const totalPriceWithVAT = totalPrice + vatAmount;
 
+    // ✅ جلب القاعات المشابهة بناءً على نفس `occasion_id`
+    const similarVenues = await this.venueRepository.find({
+      where: { occasion: { id: venue.occasion.id }, id: Not(id) }, // استثناء القاعة الحالية
+      take: 3,
+      relations: ['property', 'venueGalleries', 'property.city', 'property.city.country', 'ratings'],
+      order: { visitCount: 'DESC' },
+    });
+
+    return {
+      averageRating: Number(averageRating).toFixed(1),
+      venue: {
+        ...venue,
+        packagePrice: packagePrice.toFixed(2),
+        additionalServicesPrice: additionalServicesPrice.toFixed(2),
+        additionalEquipmentsPrice: additionalEquipmentsPrice.toFixed(2),
+        totalPriceWithVAT: totalPriceWithVAT.toFixed(2),
+        vatAmount: vatAmount.toFixed(2),
+        totalPrice: totalPrice.toFixed(2),
+      },
+      similarVenues,
+    };
+  }
+
+  async findOneDetailsVenue(id) {
+    const venue = await this.venueRepository.findOne({
+      where: { id },
+      relations: [
+        'venueGalleries',
+        'occasion',
+        // "venuePackages",
+        // "venueServices" , "venueServices.service",
+        // "venueEquipments" , "venueEquipments.equipment",
+        // "venueFeatures" , "venueFeatures.feature",
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(this.i18n.t('events.record_not_found', { args: { id } }));
+    }
+
+    venue.visitCount += 1;
+    await this.venueRepository.save(venue);
 
     // ✅ جلب القاعات المشابهة بناءً على نفس `occasion_id`
-  const similarVenues = await this.venueRepository.find({
-    where: { occasion:{id : venue.occasion.id}, id: Not(id) }, // استثناء القاعة الحالية
-    take: 3, 
-    relations : ["property" , "venueGalleries"  ,"property.city" , "property.city.country"   , "ratings" ] ,
-    order: { visitCount: 'DESC' },
-  });
+    const similarVenues = await this.venueRepository.find({
+      where: { occasion: { id: venue.occasion.id }, id: Not(id) }, // استثناء القاعة الحالية
+      take: 3,
+      relations: ['property', 'venueGalleries', 'property.city', 'property.city.country', 'ratings'],
+      order: { visitCount: 'DESC' },
+    });
 
-    return { averageRating: Number(averageRating).toFixed(1), venue : { 
-      ...venue ,
-      packagePrice : packagePrice.toFixed(2) ,
-      additionalServicesPrice : additionalServicesPrice.toFixed(2) ,
-      additionalEquipmentsPrice : additionalEquipmentsPrice.toFixed(2) ,
-      totalPriceWithVAT : totalPriceWithVAT.toFixed(2),
-      vatAmount  : vatAmount.toFixed(2) ,
-      totalPrice : totalPrice.toFixed(2),
-    } ,  similarVenues };
+    return { venue: { ...venue }, similarVenues };
+  }
+
+  async findOneReservationVenue(id, packageId?: number) {
+    const Package = packageId ?  await this.venuePackageRepository.findOne({where : { id: packageId} , relations : ["services" , "services.service" , "equipments", "equipments.equipment"] }) : null
+    const venue = await this.venueRepository.findOne({
+      where: { id },
+      relations: [
+        "venueGalleries",
+        'venueServices',
+        'venueServices.service',
+        'venueEquipments',
+        'venueEquipments.equipment',
+        'venuePackages',
+        // "venueFeatures" , "venueFeatures.feature",
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(this.i18n.t('events.record_not_found', { args: { id } }));
+    }
+
+    let totalPrice = venue.price || 0;
+    let additionalServicesPrice = 0;
+    let additionalEquipmentsPrice = 0;
+
+    //! package
+
+    if (venue.venuePackages && venue.venuePackages.length > 0) {
+      
+        const selectedPackage = packageId && venue.venuePackages.find(pkg => pkg.id === packageId);
+
+        if (selectedPackage) {
+          const packagePrice = selectedPackage.package_price;
+          totalPrice += packagePrice > venue?.price ? packagePrice - venue?.price : venue?.price - packagePrice;
+          additionalServicesPrice = Package?.equipments?.reduce((sum, equipment) => sum + (equipment.price || 0) * (equipment.count || 1), 0)
+          additionalEquipmentsPrice = Package?.services?.reduce((sum, service) => sum + (service.price || 0) * (service.count || 1), 0)
+        }
+        else {
+          //! Add service prices
+          if (venue.venueServices && venue.venueServices.length > 0) {
+            let calc = venue.venueServices.reduce((sum, service) => sum + (service.price || 0) * (service.count ), 0);
+            additionalServicesPrice = calc;
+            console.log(calc)
+            totalPrice += calc;
+          }
+  
+          //! Add equipment prices
+          if (venue.venueEquipments && venue.venueEquipments.length > 0) {
+            let calc = venue.venueEquipments.reduce((sum, equipment) => sum + (equipment.price || 0) * (equipment.count ), 0);
+            additionalEquipmentsPrice = calc;
+            totalPrice += calc;
+          }
+        }
+
+      
+      
+      
+    }
+
+
+    
+
+    return {
+      venue: {
+        ...venue,
+        additionalServicesPrice: additionalServicesPrice.toFixed(2),
+        additionalEquipmentsPrice: additionalEquipmentsPrice.toFixed(2),
+        totalPrice: totalPrice.toFixed(2),
+        totalPriceWithVAT: (totalPrice + (totalPrice * 0.15)).toFixed(2),
+      },
+      package: Package,
+    };
   }
 }

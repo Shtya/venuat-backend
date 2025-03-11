@@ -33,8 +33,6 @@ export class VenueController {
 
 
   @Get()
-  // @UseGuards(AuthGuard)
-  // @Permissions(EPermissions.VENUES_READ)
   async findAll(@Query() query  ) {
     const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
     return   this.venueService.FIND(
@@ -107,10 +105,22 @@ export class VenueController {
 
 
   @Get(':id')
-  // @UseGuards(AuthG
   async findOne(@Param('id') id: number , @Query("packageId") packageId : number ) {
     return  this.venueService.customFindOne(id , packageId)
   }
+  
+  @Get(':id/detials-venue')
+  async findOneDetailsVenue(@Param('id') id: number ) {
+    return  this.venueService.findOneDetailsVenue(id )
+  }
+  
+  @Get(':id/reservation-venue')
+  async findOneReservationVenue(@Param('id') id: number  , @Query("packageId") packageId : number  ) {
+    return  this.venueService.findOneReservationVenue(id , packageId )
+  }
+
+
+
 
   @Put(':id')
   @UseGuards(AuthGuard)

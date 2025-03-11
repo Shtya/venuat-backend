@@ -1,4 +1,9 @@
 {
+  "equipment": {
+  "not_found_for_venue": "لم يتم العثور على الجهاز برقم التعريف {serviceId} للمكان برقم التعريف {venueId}",
+  "updated": "تم التحديث بنجاح"
+}
+,
   "price_must_be_Number": "يجب أن يكون السعر رقمًا صالحًا.",
   "refresh_token_required": "رمز التحديث مطلوب.",
   "code_must_be_unique": "يجب أن يكون الكود فريدًا.",
