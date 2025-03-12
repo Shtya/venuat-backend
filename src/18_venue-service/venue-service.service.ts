@@ -51,7 +51,7 @@ export class VenueServiceService {
   async addServicesToVenue(venueId: number, dto: AddServicesToVenueDto) {
     const venue = await this.venueRepository.findOne({
       where: { id: venueId },
-      relations: ['venueServices'],
+      relations: ['venueServices', 'venueServices.service'],
     });
   
     if (!venue) {
@@ -67,31 +67,96 @@ export class VenueServiceService {
         throw new NotFoundException(this.i18n.t('events.service.not_found', { args: { id: serviceDto.service } }));
       }
   
-      // تحقق مما إذا كانت الخدمة مضافة مسبقًا إلى هذا الـ Venue
-      const existingVenueService = venue.venueServices.find(vs => vs?.service?.id === service.id);
+      // Check if the service is already associated with the venue
+      let existingVenueService = venue.venueServices.find(
+        (vs) => vs?.service?.id === service.id
+      );
   
       if (existingVenueService) {
-        throw new NotFoundException(
-          this.i18n.t('events.service.already_associated', {
-            args: { serviceId: service.id, venueId: venue.id },
-          })
-        );
+        // If the count or price has changed, update it
+        if (existingVenueService.count !== serviceDto.count || existingVenueService.price !== serviceDto.price) {
+          existingVenueService.count = serviceDto.count;
+          existingVenueService.price = serviceDto.price;
+          await this.venueServiceRepository.save(existingVenueService);
+          addedServices.push(existingVenueService);
+        }
+      } else {
+        // Create new venue-service association
+        const venueService = this.venueServiceRepository.create({
+          venue,
+          service,
+          count: serviceDto.count,
+          price: serviceDto.price,
+        });
+        await this.venueServiceRepository.save(venueService);
+        addedServices.push(venueService);
       }
-  
-      // إنشاء العلاقة بين المكان والخدمة
-      const venueService = this.venueServiceRepository.create({
-        venue,
-        service,
-        count: serviceDto.count,
-        price: serviceDto.price,
-      });
-  
-      await this.venueServiceRepository.save(venueService);
-      addedServices.push(venueService);
     }
   
-    return addedServices;
+    // Fetch the updated list of services associated with the venue
+    const updatedVenue = await this.venueRepository.findOne({
+      where: { id: venueId },
+      relations: ['venueServices', 'venueServices.service'],
+    });
+  
+    const services = updatedVenue.venueServices.map((vs) => ({
+      id: vs.service.id,
+      name: vs.service.name,
+      count: vs.count,
+      price: vs.price,
+    }));
+  
+    return { services };
   }
+  
+  
+  
+
+
+  // async addServicesToVenue(venueId: number, dto: AddServicesToVenueDto) {
+  //   const venue = await this.venueRepository.findOne({
+  //     where: { id: venueId },
+  //     relations: ['venueServices'],
+  //   });
+  
+  //   if (!venue) {
+  //     throw new NotFoundException(this.i18n.t('events.venue.not_found', { args: { id: venueId } }));
+  //   }
+  
+  //   const addedServices = [];
+  
+  //   for (const serviceDto of dto.services) {
+  //     const service = await this.serviceRepository.findOne({ where: { id: serviceDto.service } });
+  
+  //     if (!service) {
+  //       throw new NotFoundException(this.i18n.t('events.service.not_found', { args: { id: serviceDto.service } }));
+  //     }
+  
+  //     // تحقق مما إذا كانت الخدمة مضافة مسبقًا إلى هذا الـ Venue
+  //     const existingVenueService = venue.venueServices.find(vs => vs?.service?.id === service.id);
+  
+  //     if (existingVenueService) {
+  //       throw new NotFoundException(
+  //         this.i18n.t('events.service.already_associated', {
+  //           args: { serviceId: service.id, venueId: venue.id },
+  //         })
+  //       );
+  //     }
+  
+  //     // إنشاء العلاقة بين المكان والخدمة
+  //     const venueService = this.venueServiceRepository.create({
+  //       venue,
+  //       service,
+  //       count: serviceDto.count,
+  //       price: serviceDto.price,
+  //     });
+  
+  //     await this.venueServiceRepository.save(venueService);
+  //     addedServices.push(venueService);
+  //   }
+  
+  //   return addedServices;
+  // }
   
 
 

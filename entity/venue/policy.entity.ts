@@ -22,7 +22,7 @@ export class Policy {
 
 
 
-  @OneToMany(() => VenuePolicy, venuePolicy => venuePolicy.policy)
+  @OneToMany(() => VenuePolicy, venuePolicy => venuePolicy.policy , {cascade : ["remove"] , onDelete : "CASCADE" } )
   venuePolicies: VenuePolicy[];
 
   @CreateDateColumn()
