@@ -14,7 +14,7 @@ export class ContactUsController {
   }
 
    @Get()
-   @UseGuards(AuthGuard)
+  //  @UseGuards(AuthGuard)
    async findAll(@Query() query  ) {
      const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
      
