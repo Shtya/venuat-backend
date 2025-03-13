@@ -8,13 +8,13 @@ export class ContactUsController {
   constructor(private readonly contactUsService: ContactUsService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   create(@Body() dto: CreateContactUsDto) {
     return this.contactUsService.create(dto);
   }
 
    @Get()
-  //  @UseGuards(AuthGuard)
+   @UseGuards(AuthGuard)
    async findAll(@Query() query  ) {
      const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
      
