@@ -33,6 +33,6 @@
       "*.entity.ts": "typescript",
       "*.dto.ts": "typescript",
     },
-    "liveServer.settings.multiRootWorkspaceName": "hossam",
+    "liveServer.settings.multiRootWorkspaceName": "M5zoon Dashboard ReactJS",
   },
 }

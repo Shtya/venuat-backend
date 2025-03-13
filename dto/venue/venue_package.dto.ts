@@ -23,6 +23,10 @@ export class CreateVenuePackageDto {
   @IsDate({ message: "events.endDateMustBeDate" })
   @Type(() => Date)
   end_date: Date;
+
+
+  venue_price:number
+  offer_price_during_period:number
 }
 
 

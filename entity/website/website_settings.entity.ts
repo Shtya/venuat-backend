@@ -31,6 +31,13 @@ export class HomeSettings {
   }>;
 
   @Column({ type: 'jsonb', nullable: true })
+  policies?: Array<{
+    id: string;
+    name: { ar: string; en: string };
+    description: { ar: string; en: string };
+  }>;
+
+  @Column({ type: 'jsonb', nullable: true })
   socialMedia?: Array<{
     id: string;
     name: string;

@@ -24,6 +24,9 @@ export class VenuePackage {
   @Column('decimal', { default : 0 ,  nullable: true })
   package_price: number;
 
+  @Column('decimal', { default : 0 ,  nullable: true })
+  offer_price_during_period : number;
+
   @Column({ type: 'timestamp', nullable: false })
   start_date: Date;
 

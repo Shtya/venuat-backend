@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VenuePackage } from 'entity/venue/venue_package.entity';
@@ -35,12 +35,17 @@ export class VenuePackageService extends BaseService<VenuePackage> {
     await checkFieldExists(this.venueRepo, { id: dto.venue_id }, "venue doesn't exist.", true, 404);
     const venue = await this.venueRepo.findOne({ where: { id: dto.venue_id } });
 
-    dto.package_price = venue?.price || 0;
+    dto.package_price = dto.venue_price || venue?.price || 0;
 
     // التحقق من أن تاريخ البداية قبل تاريخ النهاية
     if (new Date(dto.start_date) >= new Date(dto.end_date)) {
-        throw new Error("Start date must be before end date.");
+        throw new BadRequestException("Start date must be before end date.");
     }
+
+    // التحقق من عدم وجود باقة بتاريخ انتهاء إذا كانت الباقة عرضًا
+    if (dto.start_date && new Date(dto.start_date) <= new Date()) {
+      throw new BadRequestException("The offer end date must be in the future.");
+  }
 
     // جلب المعدات والخدمات المتاحة للمستخدم
     const predefinedEquipments = await this.getPredefinedEquipments(req.user.id);

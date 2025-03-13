@@ -141,6 +141,28 @@ export class AuthService {
     return { message: this.i18n.t('events.password_reset_success') };
   }
 
+  async checkOtpCode(dto) {
+    const { email, otp } = dto;
+  
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BadRequestException(this.i18n.t('events.user_not_found'));
+    }
+  
+    // Check if OTP is available and not expired
+    if (!user.otpToken || !user.otpExpire || user.otpExpire < new Date()) {
+      throw new BadRequestException(this.i18n.t('events.invalid_or_expired_otp'));
+    }
+  
+    // Validate OTP
+    if (user.otpToken !== otp) {
+      throw new BadRequestException(this.i18n.t('events.invalid_or_expired_otp'));
+    }
+  
+    return { message: this.i18n.t('events.otp_valid') };
+  }
+  
+
   async generateOTP(userId: number): Promise<string> {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const hashedOTP = await argon.hash(otp);

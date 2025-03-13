@@ -25,6 +25,7 @@ export class HomeSettingsService {
         specialVenues: [],
         bestRatedVenues: [],
         faqs: [],
+        policies: [],
         termsAndCondition: { ar: null, en: null },
         socialMedia: [],
       });
@@ -33,7 +34,6 @@ export class HomeSettingsService {
     }
 
     const specialVenues = settings.specialVenues?.length ? await this.venueRepo.find({ where: { id: In(settings.specialVenues) }, relations: [ "ratings" , "occasion" , "venueGalleries" , "property", "property.city", "property.city.country"]}): [];
-
     const bestRatedVenues = settings.bestRatedVenues?.length ? await this.venueRepo.find({ where: { id: In(settings.bestRatedVenues) }, relations: [ "ratings" , "occasion" , "venueGalleries" , "property", "property.city", "property.city.country"]}): [];
 
     return {
@@ -56,6 +56,7 @@ export class HomeSettingsService {
         specialVenues: [],
         bestRatedVenues: [],
         faqs: [],
+        policies : [],
         termsAndCondition: { ar: null, en: null },
         socialMedia: [],
       });
@@ -118,6 +119,31 @@ export class HomeSettingsService {
     }
 
     settings.faqs.splice(faqIndex, 1);
+    return this.homeSettingsRepo.save(settings);
+  }
+
+
+  async addPolicies(dto) {
+    const {settings} = await this.getSettings();
+
+    const newPolicies = {
+      id: uuidv4(), // إنشاء ID فريد
+      ...dto,
+    };
+
+    settings.policies.push(newPolicies);
+    return this.homeSettingsRepo.save(settings);
+  }
+
+  async removePolicies(id: string): Promise<HomeSettings> {
+    const {settings} = await this.getSettings();
+
+    const PoliciesIndex = settings.policies.findIndex(Policies => Policies.id === id);
+    if (PoliciesIndex === -1) {
+      throw new NotFoundException('Policies not found');
+    }
+
+    settings.policies.splice(PoliciesIndex, 1);
     return this.homeSettingsRepo.save(settings);
   }
 }

@@ -38,6 +38,20 @@ export class HomeSettingsController {
     return this.homeSettingsService.removeFaq(id);
   }
 
+  @Post('policy')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.WEBSITE_SETTINGS_CREATE)
+  addPolicies(@Body() dto) {
+    return this.homeSettingsService.addPolicies(dto);
+  }
+
+  @Delete('policy/:id')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.WEBSITE_SETTINGS_DELETE)
+  removePolicies(@Param('id') id: string) {
+    return this.homeSettingsService.removePolicies(id);
+  }
+
 
 
 }

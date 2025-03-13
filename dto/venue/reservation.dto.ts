@@ -21,7 +21,7 @@ export class CreateReservationDto {
 
   @IsOptional() // معرف الباقة مطلوب
   @IsNumber({}, { message: "events.packageIdMustBeNumber" }) // يجب أن يكون معرف الباقة رقمًا
-  package: number;
+  package: number | string;
 
   @IsOptional()
   package_details: object;

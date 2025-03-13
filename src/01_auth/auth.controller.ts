@@ -125,6 +125,43 @@ async resendOtp(@Body() { email }: { email: string }) {
     return this.authService.forgotPassword(email);
   }
 
+
+
+
+  // ! For password
+  @Post('check-otp')
+  async checkOtp(@Body() dto) {
+    return this.authService.checkOtpCode(dto);
+  }
+
+  @Post('resend-forgot-password-otp')
+async resendForgotPasswordOtp(@Body() { email }: { email: string }) {
+  // Find the user by email
+  const user = await this.userRepository.findOne({ where: { email } });
+
+  if (!user) {
+    throw new BadRequestException(this.authService.i18n.t("events.user_not_found_repeat"));
+  }
+
+  // Generate a new OTP and expiry time
+  const otpCode = randomInt(100000, 999999);
+  const otpExpire = dayjs().add(5, 'minutes').toDate();  
+
+  // Update the OTP and expiry in the database
+  user.otpToken = otpCode.toString();
+  user.otpExpire = otpExpire;
+
+  await this.userRepository.save(user);
+
+  // Send OTP to the user's email
+  await this.authService.mailService.sendOTPEmail(user.email, otpCode.toString(), "Reset Password");
+
+  return { message: this.authService.i18n.t("events.new_otp_sent") };
+}
+
+
+
+
   @Post('reset-password')
   async resetPassword(@Body() dto) {
     return this.authService.resetPassword(dto);

@@ -44,6 +44,14 @@ export class ReservationController   {
     return this.reservationService.findOne(id , ["user" , "venue" , "package"]);
   }
 
+
+  @Get(':id/user')
+  @UseGuards(AuthGuard)
+  @Permissions(EPermissions.RESERVATIONS_READ)
+  findOneVenue(@Param('id') id: number) {
+    return this.reservationService.findUserReservations(id);
+  }
+
   @Delete(':id')
   @UseGuards(AuthGuard)
   @Permissions(EPermissions.RESERVATIONS_DELETE)
