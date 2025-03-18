@@ -34,7 +34,21 @@ export class VenueController {
 
   @Get()
   async findAll(@Query() query  ) {
-    const { page, limit, search, sortBy, sortOrder, ...restQueryParams }  = query  ;
+    const { page, limit, search, occasion, sortBy, sortOrder, ...restQueryParams }  = query  ;
+
+    let occasionIds: number | number[] | undefined;
+
+    if (occasion) {
+      if (Array.isArray(occasion)) {
+        // If occasion is an array, convert each item to a number
+        occasionIds = occasion.map(id => Number(id));
+      } else {
+        // If occasion is a single value, convert it to a number
+        occasionIds = Number(occasion);
+      }
+    }
+
+
     return   this.venueService.FIND(
       'venue',
       search ,
@@ -46,7 +60,9 @@ export class VenueController {
       this.venueService.relations,                // Relations 
       ["name" , "description" , "operating_system" ,"phone" ,"email" ,"contact_person" ],         // search parameters
       restQueryParams,    // search with fields
-      true
+      true ,
+      "",
+      occasionIds
     )
   }
 
@@ -75,10 +91,8 @@ export class VenueController {
 
     if (occasion) {
       if (Array.isArray(occasion)) {
-        // If occasion is an array, convert each item to a number
         occasionIds = occasion.map(id => Number(id));
       } else {
-        // If occasion is a single value, convert it to a number
         occasionIds = Number(occasion);
       }
     }

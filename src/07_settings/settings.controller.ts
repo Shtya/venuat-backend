@@ -11,8 +11,6 @@ export class HomeSettingsController {
 
 
   @Get()
-  // @UseGuards(AuthGuard)
-  // @Permissions(EPermissions.WEBSITE_SETTINGS_READ)
   getSettings() {
     return this.homeSettingsService.getSettings();
   }

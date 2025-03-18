@@ -28,6 +28,8 @@ export class HomeSettingsService {
         policies: [],
         termsAndCondition: { ar: null, en: null },
         socialMedia: [],
+        dataPrivacy: { ar: null, en: null },
+        necessaryLaws: { ar: null, en: null }
       });
 
       settings = await this.homeSettingsRepo.save(settings);
@@ -43,7 +45,9 @@ export class HomeSettingsService {
     };
   }
 
+
   async createOrUpdate(dto: CreateHomeSettingsDto) {
+
     let settings = await this.homeSettingsRepo.findOne({ where: { id: 1 } });
 
     // إذا لم يكن موجودًا، نقوم بإنشائه مع قيم `null`
@@ -59,6 +63,8 @@ export class HomeSettingsService {
         policies : [],
         termsAndCondition: { ar: null, en: null },
         socialMedia: [],
+        dataPrivacy: { ar: null, en: null },
+        necessaryLaws: { ar: null, en: null }
       });
       settings = await this.homeSettingsRepo.save(settings);
     }

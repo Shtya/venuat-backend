@@ -23,6 +23,14 @@ export class HomeSettings {
   @Column({ type: 'jsonb' })
   termsAndCondition: { ar: string; en: string };
 
+  @Column({ type: 'jsonb' })
+  dataPrivacy: { ar: string; en: string };
+
+  @Column({ type: 'jsonb' })
+  necessaryLaws: { ar: string; en: string };
+
+
+
   @Column({ type: 'jsonb', nullable: true })
   faqs?: Array<{
     id: string;

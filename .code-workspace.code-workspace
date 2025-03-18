@@ -5,31 +5,13 @@
     },
     {
       "path": "../Venuat Website"
+    },
+    {
+      "path": "../../M5zoon/ecom-station HTML"
     }
   ],
   "settings": {
-    "explorer.sortOrder": "default",
-    "explorer.fileNesting.enabled": true,
-    "files.exclude": {
-      "**/.git": true,
-      "**/.vscode": true,
-      "**/node_modules": true,
-      "**/dist": true,
-      "**/.prettierrc": true,
-      "**/package-lock.json": true,
-      "**/tsconfig.build.json": true,
-      "**/.gitignore": true,
-      // "**/.eslintrc.js": true,
-    },
-    "search.exclude": {
-      "**/node_modules": true,
-      "**/dist": true,
-      "**/*.log": true,
-    },
-    "files.associations": {
-      "*.entity.ts": "typescript",
-      "*.dto.ts": "typescript",
-    },
-    "liveServer.settings.multiRootWorkspaceName": "M5zoon Dashboard ReactJS",
+    "liveServer.settings.multiRootWorkspaceName": "ecom-station HTML"
   },
+
 }

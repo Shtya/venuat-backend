@@ -61,7 +61,21 @@ export class BaseService<T> {
     }
   }
 
-  async FIND(entityName: string, search?: string, page: any = 1, limit: any = 10, sortBy?: string, sortOrder: 'ASC' | 'DESC' = 'DESC', fieldsExclude?: string[], relations?: string[], searchFields?: string[], specificSearchFields?: any , customRelations ?: boolean ,status ?: string ) {
+  async FIND(
+     entityName: string,
+     search?: string,
+     page: any = 1,
+     limit: any = 10,
+     sortBy?: string,
+     sortOrder: 'ASC' | 'DESC' = 'DESC',
+     fieldsExclude?: string[],
+     relations?: string[],
+     searchFields?: string[],
+     specificSearchFields?: any,
+     customRelations?: boolean,
+     status?: string ,
+     occasion?: number | number[],
+    ) {
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
 
@@ -120,25 +134,20 @@ export class BaseService<T> {
                   if (!isNaN(numericSearch)) {
                     qb.orWhere(`${entityName}.${field} = :numericSearch`, { numericSearch });
                   }
-                } 
-                
-                else if (columnMetadata.type === 'timestamp') {
+                } else if (columnMetadata.type === 'timestamp') {
                   let normalizedSearchValue = searchValue;
 
                   if (/^\d{4}-\d{2}$/.test(searchValue)) {
-                    normalizedSearchValue = `${searchValue}-01`; 
+                    normalizedSearchValue = `${searchValue}-01`;
                     qb.orWhere(`${entityName}.${field} = CAST(:normalizedSearchValue AS timestamp)`, { normalizedSearchValue });
                   }
-                } 
-                
-                else {
+                } else {
                   qb.orWhere(`${entityName}.${field} = :value`, { value: searchValue });
                 }
               }
             });
 
             status && qb.andWhere(`${entityName}.status = :status`, { status: status });
-
           })
         );
       }
@@ -182,26 +191,32 @@ export class BaseService<T> {
       relations.forEach(relation => {
         query.leftJoinAndSelect(`${entityName}.${relation}`, relation);
       });
-
     }
 
-
-
     //! Apply sorting
-      const defaultSortBy = "created_at";
-      const sortField = sortBy || defaultSortBy; 
-      const sortDirection = sortOrder || "DESC"; 
+    const defaultSortBy = 'created_at';
+    const sortField = sortBy || defaultSortBy;
+    const sortDirection = sortOrder || 'DESC';
 
-      const columnExists = this.repository.metadata.columns.some(col => col.propertyName === sortField);
-      if (!columnExists) {
-        throw new BadRequestException(this.i18n.t('events.invalid_sort_by', { args: { sortBy: sortField } }));
+    const columnExists = this.repository.metadata.columns.some(col => col.propertyName === sortField);
+    if (!columnExists) {
+      throw new BadRequestException(this.i18n.t('events.invalid_sort_by', { args: { sortBy: sortField } }));
+    }
+
+    query.orderBy(`${entityName}.${sortField}`, sortDirection);
+
+      //! if exist filter via occasion
+      if (occasion !== undefined) {
+        console.log("first")
+        if (Array.isArray(occasion)) {
+          query.andWhere('occasion.id IN (:...occasionIds)', { occasionIds: occasion });
+        } else {
+          query.andWhere('occasion.id = :occasion', { occasion });
+        }
       }
 
-      query.orderBy(`${entityName}.${sortField}`, sortDirection);
-
-
     //! Fetch data
-    const [data, total] = await query.getManyAndCount() as any;
+    const [data, total] = (await query.getManyAndCount()) as any;
 
     //! Exclude specified fields from the response
     if (fieldsExclude?.length > 0) {
@@ -215,8 +230,10 @@ export class BaseService<T> {
       });
     }
 
+  
 
-    return { limit: limitNumber, countRecored: total, page: pageNumber, data  };
+
+    return { limit: limitNumber, countRecored: total, page: pageNumber, data };
   }
 
   async findAll(
@@ -254,7 +271,7 @@ export class BaseService<T> {
 
     // Apply sorting
     if (!['ASC', 'DESC'].includes(sortOrder)) throw new BadRequestException('order can accept only ASC or DESC values');
-    if (sortBy) query.orderBy(`${entityName}.${sortBy || "created_at"}`, sortOrder || "DESC");
+    if (sortBy) query.orderBy(`${entityName}.${sortBy || 'created_at'}`, sortOrder || 'DESC');
 
     const [data, total] = await query.getManyAndCount();
     return { limit: limitNumber, countRecored: total, page: pageNumber, data };
@@ -264,7 +281,7 @@ export class BaseService<T> {
     const entity = await this.repository.findOne({ where: { id } as any, relations: relations });
     if (!entity) {
       throw new NotFoundException(this.i18n.t('events.record_not_found', { args: { id } }));
-      // return 
+      // return
     }
     return entity;
   }

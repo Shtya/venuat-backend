@@ -37,6 +37,7 @@ import { SettingsModule } from './07_settings/settings.module';
 import { VenueFeatureModule } from './24_venue-feature/venue-feature.module';
 import { VenueRatingModule } from './venue_ratings/venue_ratings.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
+import { LettersModule } from './letters/letters.module';
 
 
 
@@ -100,6 +101,7 @@ import { ContactUsModule } from './contact-us/contact-us.module';
     VenueFeatureModule,
     VenueRatingModule,
     ContactUsModule,
+    LettersModule,
   ],
   controllers: [ApiController],
   providers: [ LoggingValidationPipe , QueryFailedErrorFilter ],

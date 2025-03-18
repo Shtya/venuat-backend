@@ -31,6 +31,9 @@ export class User {
   @Column({ default: null })
   avatar: string;
 
+  @Column({ default: false })
+  isSubscribed: boolean;
+
   @Column({ default: null })
   otpToken: string;
 

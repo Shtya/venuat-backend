@@ -47,8 +47,13 @@ export class CreateHomeSettingsDto {
   bestRatedVenues?: number[];
 
   @ValidateNested()
-  @Type(() => LocalizedText)
-  termsAndCondition: LocalizedText;
+  termsAndCondition: {ar:string , en:string };
+
+  @ValidateNested()
+  dataPrivacy: {ar:string , en:string };
+  
+  @ValidateNested()
+  necessaryLaws: {ar:string , en:string };
 
   @IsOptional()
   @ValidateNested({ each: true })
@@ -142,6 +147,11 @@ export class UpdateHomeSettingsDto {
   bestRatedVenues?: number[];
 
   @ValidateNested()
-  @Type(() => LocalizedTextDto)
-  termsAndCondition: LocalizedTextDto;
+  termsAndCondition: {ar:string , en:string };
+
+  @ValidateNested()
+  dataPrivacy: {ar:string , en:string };
+  
+  @ValidateNested()
+  necessaryLaws: {ar:string , en:string };
 }
